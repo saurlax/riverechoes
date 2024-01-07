@@ -2,8 +2,8 @@
 </script>
 
 <template>
-  <h1>Project Man</h1>
-  <p>A web game about Manchu culture based on Vue.js.</p>
+  <h1>辽河满韵</h1>
+  <p>一个关于满族文化的故事。</p>
 </template>
 
 <style scoped></style>
