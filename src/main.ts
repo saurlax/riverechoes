@@ -1,22 +1,17 @@
 import { createApp } from 'vue'
 import { createRouter, createWebHistory } from 'vue-router'
+import App from './app.vue'
 import './style.css'
 
-import App from './App.vue'
-import Index from './pages/Index.vue'
-import Map from './pages/Map.vue'
-
+const modules = import.meta.glob('./pages/*.vue')
 const router = createRouter({
   history: createWebHistory(),
-  routes: [
-    {
-      path: '/',
-      component: Index
-    }, {
-      path: '/map',
-      component: Map
+  routes: Object.keys(modules).map(path => {
+    return {
+      path: path.slice(7).replace(/index|.vue/g, ''),
+      component: modules[path]
     }
-  ]
+  })
 })
 
 const app = createApp(App)
