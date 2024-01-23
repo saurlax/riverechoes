@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper">
     <h1>辽河满韵</h1>
-    <RouterLink to="/map"><button>开始游戏</button></RouterLink>
+    <RouterLink to="/map">开始游戏</RouterLink>
   </div>
 </template>
 

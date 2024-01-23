@@ -18,10 +18,9 @@ body {
   width: 100%;
 }
 
-button {
+a {
   color: white;
-  border: none;
-  outline: none;
+  text-decoration: none;
   font-size: 1rem;
   padding: 20px 40px 40px 20px;
   background: center no-repeat url('/assets/button.webp');
@@ -30,6 +29,6 @@ button {
   filter: drop-shadow(0 0 4px white);
 }
 
-button:active {
+a:active {
   filter: brightness(0.8);
 }
