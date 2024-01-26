@@ -1,1 +1,3 @@
-<template>祭祀</template>
+<template>
+  <RouterLink to="/map"><button>返回</button></RouterLink>
+</template>

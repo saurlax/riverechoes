@@ -1,3 +1,3 @@
 <template>
-  表演
+  <RouterLink to="/map"><button>返回</button></RouterLink>
 </template>
