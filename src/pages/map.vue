@@ -5,11 +5,11 @@
 <template>
   <div class="wrapper">
     <div class="map">
-      <RouterLink to="/dress">梳妆</RouterLink>
-      <RouterLink to="/craft">工艺</RouterLink>
-      <RouterLink to="/show">表演</RouterLink>
-      <RouterLink to="/exhibition">展览</RouterLink>
-      <RouterLink to="/sacrifice">祭祀</RouterLink>
+      <RouterLink to="/dress"><button>梳妆</button></RouterLink>
+      <RouterLink to="/craft"><button>工艺</button></RouterLink>
+      <RouterLink to="/show"><button>表演</button></RouterLink>
+      <RouterLink to="/exhibition"><button>展览</button></RouterLink>
+      <RouterLink to="/sacrifice"><button>祭祀</button></RouterLink>
     </div>
   </div>
 </template>
