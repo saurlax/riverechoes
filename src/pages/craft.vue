@@ -21,7 +21,6 @@ const draw = (e: TouchEvent) => {
   for (const i of e.touches) {
     ctx.beginPath()
     ctx.lineWidth = i.force
-    // ctx.arc(i.clientX - t.offsetLeft, i.clientY - t.offsetTop, i.force, 0, 2 * Math.PI)
     ctx.moveTo(lastTouches[i.identifier].clientX - t.offsetLeft, lastTouches[i.identifier].clientY - t.offsetTop)
     ctx.lineTo(i.clientX - t.offsetLeft, i.clientY - t.offsetTop)
     ctx.stroke()

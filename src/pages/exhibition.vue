@@ -1,7 +1,10 @@
+<script setup lang="ts">
+</script>
+
 <template>
   <div class="item placeholder">展示的物品</div>
   <RouterLink to="/map"><button>返回</button></RouterLink>
-  <button>AR模式</button>
+  <RouterLink to="/ar"><button>AR模式</button></RouterLink>
 </template>
 
 
