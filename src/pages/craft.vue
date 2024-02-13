@@ -1,13 +1,25 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted, ref } from 'vue'
 
+const presets = [
+  ['black'],
+  ['yellow'],
+  ['#f8e7ce', 'red'],
+]
 
 const tabletRef = ref<HTMLCanvasElement>()
+let tablet: HTMLCanvasElement
 let ctx: CanvasRenderingContext2D
 let lastTouches: TouchList
 
+const changeCtx = (type: number) => {
+  ctx.strokeStyle = presets[type][0]
+  ctx.fillStyle = presets[type][1] ?? '#f8e7ce'
+  ctx.fillRect(0, 0, tablet.width, tablet.height)
+}
+
 onMounted(() => {
-  const tablet = tabletRef.value!
+  tablet = tabletRef.value!
   tablet.width = window.innerWidth
   ctx = tablet.getContext('2d')!
   ctx.lineCap = 'round'
@@ -34,6 +46,11 @@ const draw = (e: TouchEvent) => {
 <template>
   <div>
     <RouterLink to="/map"><button>返回</button></RouterLink>
+  </div>
+  <div>
+    <button @click="changeCtx(0)">书法</button>
+    <button @click="changeCtx(1)">糖画</button>
+    <button @click="changeCtx(2)">剪纸</button>
   </div>
   <canvas height="400px" ref="tabletRef" width="100px" @touchstart="draw" @touchmove="draw"></canvas>
 </template>
