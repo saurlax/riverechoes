@@ -38,6 +38,7 @@ const draw = (e: TouchEvent) => {
       <RouterLink to="/map"><button>返回</button></RouterLink>
     </div>
     <canvas height="400px" ref="tabletRef" width="100px" @touchstart="draw" @touchmove="draw"></canvas>
+    <div class="tip">点击进行书写</div>
   </div>
 </template>
 
@@ -45,6 +46,14 @@ const draw = (e: TouchEvent) => {
 .background {
   background-image: url('/assets/craft.jpg');
   height: calc(100vh - 400px);
+}
+
+.tip {
+  position: fixed;
+  bottom: 380px;
+  font-size: 0.8rem;
+  text-align: center;
+  width: 100%;
 }
 
 canvas {

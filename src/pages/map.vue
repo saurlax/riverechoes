@@ -5,7 +5,7 @@
 <template>
   <div class="background">
     <RouterLink to="/dress"><button>梳妆</button></RouterLink>
-    <RouterLink to="/craft"><button>工艺</button></RouterLink>
+    <RouterLink to="/craft"><button>书法</button></RouterLink>
     <RouterLink to="/show"><button>表演</button></RouterLink>
     <RouterLink to="/sacrifice"><button>祭祀</button></RouterLink>
     <RouterLink to="/exhibition"><button>展览</button></RouterLink>
