@@ -28,12 +28,12 @@ button {
   color: white;
   font-size: 1rem;
   padding: 6px 8px;
-  background: #ca3f3f;
+  background: #ca3f3faa;
   cursor: pointer;
 }
 
 button:active {
-  background: #e07171;
+  background: #e07171aa;
 }
 
 .placeholder {
@@ -41,4 +41,11 @@ button:active {
   align-items: center;
   justify-content: center;
   background: url('data:image/svg+xml,<svg width="16" height="16" xmlns="http://www.w3.org/2000/svg"><line x1="0" y1="0" x2="16" y2="16" stroke="lightgray" stroke-width="4px" /></svg>');
+}
+
+.background {
+  height: 100vh;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
 }

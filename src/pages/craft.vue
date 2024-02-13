@@ -1,29 +1,18 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 
-const presets = [
-  ['black'],
-  ['yellow'],
-  ['#f8e7ce', 'red'],
-]
-
 const tabletRef = ref<HTMLCanvasElement>()
-let tablet: HTMLCanvasElement
 let ctx: CanvasRenderingContext2D
 let lastTouches: TouchList
 
-const changeCtx = (type: number) => {
-  ctx.strokeStyle = presets[type][0]
-  ctx.fillStyle = presets[type][1] ?? '#f8e7ce'
-  ctx.fillRect(0, 0, tablet.width, tablet.height)
-}
-
 onMounted(() => {
-  tablet = tabletRef.value!
+  const tablet = tabletRef.value!
   tablet.width = window.innerWidth
   ctx = tablet.getContext('2d')!
   ctx.lineCap = 'round'
   ctx.lineJoin = 'round'
+  ctx.fillStyle = '#fcf6ea'
+  ctx.fillRect(0, 0, tablet.width, tablet.height)
 })
 
 const draw = (e: TouchEvent) => {
@@ -44,20 +33,22 @@ const draw = (e: TouchEvent) => {
 </script>
 
 <template>
-  <div>
-    <RouterLink to="/map"><button>返回</button></RouterLink>
+  <div class="background">
+    <div>
+      <RouterLink to="/map"><button>返回</button></RouterLink>
+    </div>
+    <canvas height="400px" ref="tabletRef" width="100px" @touchstart="draw" @touchmove="draw"></canvas>
   </div>
-  <div>
-    <button @click="changeCtx(0)">书法</button>
-    <button @click="changeCtx(1)">糖画</button>
-    <button @click="changeCtx(2)">剪纸</button>
-  </div>
-  <canvas height="400px" ref="tabletRef" width="100px" @touchstart="draw" @touchmove="draw"></canvas>
 </template>
 
 <style scoped>
+.background {
+  background-image: url('/assets/craft.jpg');
+  height: calc(100vh - 400px);
+}
+
 canvas {
-  border-top: 1px solid black;
-  border-bottom: 1px solid black;
+  position: fixed;
+  bottom: 0;
 }
 </style>
