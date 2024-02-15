@@ -13,10 +13,6 @@
 </template>
 
 <style scoped>
-button {
-  opacity: 0.6;
-}
-
 .background {
   background-image: url('/assets/map.webp');
 }

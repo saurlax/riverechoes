@@ -5,6 +5,7 @@ const load = (e: Event) => {
 }
 
 const drag = (e: TouchEvent) => {
+  e.preventDefault()
   const img = e.target as HTMLImageElement
   img.style.left = e.touches[0].clientX - img.offsetWidth / 2 + 'px'
   img.style.top = e.touches[0].clientY - img.offsetHeight / 2 + 'px'
@@ -25,7 +26,7 @@ const drag = (e: TouchEvent) => {
       <img v-for="n in 14" :alt="`part${n}`" :src="`/assets/craft/${n}.webp`" @load="load" @touchmove="drag" />
     </div>
     <div class="final">
-      <div>成品展示</div>
+      <div>拖动拼装面塑</div>
       <img src="/assets/craft/final.webp" @load="load" />
     </div>
   </div>
