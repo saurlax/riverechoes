@@ -20,7 +20,7 @@
 .text {
   margin: 0;
   padding: 20px;
-  background: #ffffff66;
+  background: #ffffff88;
   position: fixed;
   bottom: 0;
 }
@@ -28,8 +28,8 @@
 .layers div {
   position: fixed;
   top: 0;
-  width: 100%;
   bottom: 0;
+  width: 100%;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
