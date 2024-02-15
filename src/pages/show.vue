@@ -7,6 +7,6 @@
 
 <style scoped>
 .background {
-  background-image: url('/assets/show.jpg');
+  background-image: url('/assets/show.webp');
 }
 </style>

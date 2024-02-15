@@ -4,7 +4,7 @@ import 'aframe'
 
 <template>
   <a-scene v-pre>
-    <a-sky src="url(/assets/sky.jpg)"></a-sky>
+    <a-sky src="url(/assets/sky.webp)"></a-sky>
     <a-entity gltf-model="url(/assets/jar.glb)" position="0 -3 -5" rotation="-90 0 0" scale="0.05 0.05 0.05"></a-entity>
     <a-entity gltf-model="url(/assets/claw.glb)" position="-5 0 0" rotation="0 0 0" scale="1 1 1"></a-entity>
     <a-entity gltf-model="url(/assets/conch.glb)" position="0 0 5" rotation="0 0 0" scale="0.05 0.05 0.05"></a-entity>

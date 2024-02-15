@@ -7,7 +7,7 @@
 
 <style scoped>
 .background {
-  background-image: url('/assets/index.jpg');
+  background-image: url('/assets/index.webp');
   display: flex;
   flex-direction: column;
   align-items: center;

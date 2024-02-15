@@ -6,6 +6,6 @@
 
 <style scoped>
 .background {
-  background-image: url('/assets/sacrifice.jpg');
+  background-image: url('/assets/sacrifice.webp');
 }
 </style>

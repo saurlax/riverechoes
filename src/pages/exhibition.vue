@@ -12,7 +12,7 @@
 
 <style scoped>
 .background {
-  background-image: url('/assets/exhibition.jpg');
+  background-image: url('/assets/exhibition.webp');
 }
 
 .item {
