@@ -3,7 +3,6 @@ const load = (e: Event) => {
   const img = e.target as HTMLImageElement
   img.style.width = img.offsetWidth * 0.2 + 'px'
 }
-// 增加拖动检测
 
 const drag = (e: TouchEvent) => {
   e.preventDefault()
