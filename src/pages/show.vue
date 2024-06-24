@@ -14,7 +14,7 @@
 
 <style scoped>
 .background {
-  background-image: url('/src/assets/show/background.webp');
+  background-image: url('/assets/show/background.webp');
 }
 
 .text {
@@ -51,7 +51,7 @@
 }
 
 .actors {
-  background-image: url('/src/assets/show/actors.webp');
+  background-image: url('/assets/show/actors.webp');
   animation: swing 1s linear infinite alternate;
 }
 
@@ -70,7 +70,7 @@
 }
 
 .notes {
-  background-image: url('/src/assets/show/notes.webp');
+  background-image: url('/assets/show/notes.webp');
   animation: float 1s linear infinite alternate;
 }
 
@@ -85,7 +85,7 @@
 }
 
 .particles {
-  background-image: url('/src/assets/show/particles.webp');
+  background-image: url('/assets/show/particles.webp');
   animation: rotate 1s linear infinite alternate;
 }
 </style>

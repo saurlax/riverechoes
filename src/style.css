@@ -41,7 +41,7 @@ button:active {
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
-  background-image: url('/src/assets/background.webp');
+  background-image: url('/assets/background.webp');
 }
 
 .text {

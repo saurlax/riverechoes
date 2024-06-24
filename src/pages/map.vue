@@ -14,7 +14,7 @@
 
 <style scoped>
 .background {
-  background-image: url('/src/assets/map.webp');
+  background-image: url('/assets/map.webp');
 }
 
 .background a {

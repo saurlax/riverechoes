@@ -1,47 +1,33 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { onMounted, ref } from 'vue'
 
-const assets = import.meta.glob('/src/assets/**/*.webp', { eager: false, as: 'url' })
-const loadCurrent = ref('')
-const loadCount = ref(0)
-const loadTotal = Object.keys(assets).length
-const loadState = computed(() => loadCount.value / loadTotal * 100)
+const loaded = ref(false)
 
 onMounted(() => {
-  Object.entries(assets).forEach(async ([path, resolve]) => {
-    const img = new Image()
-    img.onload = () => {
-      loadCurrent.value = path
-      loadCount.value += 1
-    }
-    img.src = await resolve()
-  })
+  window.onload = () => {
+    loaded.value = true
+  }
 })
 </script>
 
 <template>
   <div class="background">
     <div class="content">
-      <div v-if="loadState >= 100">
-        <router-link to="/map"><button>开始游戏</button></router-link>
-      </div>
-      <div v-else>
-        <div>加载中...({{ loadState.toFixed(2) }}%)</div>
-        <div>{{ loadCurrent }}</div>
-      </div>
+      <router-link v-if="loaded" to="/map"><button>开始游戏</button></router-link>
+      <div v-else>加载中...</div>
     </div>
   </div>
 </template>
 
 <style scoped>
 .background {
-  background-image: url('/src/assets/index.webp');
+  background-image: url('/assets/index.webp');
 }
 
 button {
   padding: 30px 50px;
   background-color: initial;
-  background-image: url('/src/assets/start.webp');
+  background-image: url('/assets/start.webp');
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;

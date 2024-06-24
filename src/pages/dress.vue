@@ -3,7 +3,7 @@ import { reactive, computed } from 'vue'
 
 const state = reactive({ a: 0, b: 0, c: 0, d: 0, e: 0, f: 0, g: 0 })
 const data = computed(() => {
-  return Object.entries(state).filter(([_, v]) => v).map(([k, v]) => `background-image: url('/src/assets/dress/${k}${v}.webp')`
+  return Object.entries(state).filter(([_, v]) => v).map(([k, v]) => `background-image: url('/assets/dress/${k}${v}.webp')`
   )
 })
 
@@ -54,7 +54,7 @@ const change = (k: keyof typeof state) => {
 }
 
 .base {
-  background-image: url('/src/assets/dress/base.webp');
+  background-image: url('/assets/dress/base.webp');
 }
 
 .switch {

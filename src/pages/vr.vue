@@ -5,12 +5,12 @@ import 'aframe'
 <template>
   <router-link to="/exhibition"><button>返回</button></router-link>
   <a-scene class="scene">
-    <a-sky src="url(/src/assets/exhibition/sky.webp)"></a-sky>
-    <a-entity gltf-model="url(/src/assets/exhibition/jar.glb)" position="0 -3 -5" rotation="-90"
+    <a-sky src="url(/assets/exhibition/sky.webp)"></a-sky>
+    <a-entity gltf-model="url(/assets/exhibition/jar.glb)" position="0 -3 -5" rotation="-90"
       scale="0.05 0.05 0.05"></a-entity>
-    <a-entity gltf-model="url(/src/assets/exhibition/claw.glb)" position="-5 0 0" scale="1 1 1"></a-entity>
-    <a-entity gltf-model="url(/src/assets/exhibition/conch.glb)" position="0 0 5" scale="0.05 0.05 0.05"></a-entity>
-    <a-entity gltf-model="url(/src/assets/exhibition/fossil.glb)" position="5" rotation="0 -90"
+    <a-entity gltf-model="url(/assets/exhibition/claw.glb)" position="-5 0 0" scale="1 1 1"></a-entity>
+    <a-entity gltf-model="url(/assets/exhibition/conch.glb)" position="0 0 5" scale="0.05 0.05 0.05"></a-entity>
+    <a-entity gltf-model="url(/assets/exhibition/fossil.glb)" position="5" rotation="0 -90"
       scale="0.5 0.5 0.5"></a-entity>
   </a-scene>
 </template>
