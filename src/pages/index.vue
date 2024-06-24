@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
+import { password } from '../utils'
 
 const loaded = ref(false)
 const size = ref(0)
@@ -27,6 +28,7 @@ onMounted(() => {
       <router-link v-if="loaded" to="/map"><button>开始游戏</button></router-link>
       <div v-else>加载中({{ (size / 1000).toFixed(2) }}KB)</div>
     </div>
+    <input class="password" placeholder="请设置访问秘钥" v-model="password">
   </div>
 </template>
 
@@ -51,5 +53,12 @@ button {
   display: flex;
   justify-content: center;
   text-align: center;
+}
+
+input {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  outline: none;
 }
 </style>

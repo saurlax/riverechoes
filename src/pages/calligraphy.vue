@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
+import ask from '../components/ask.vue'
 
 const tabletRef = ref<HTMLCanvasElement>()
 let ctx: CanvasRenderingContext2D
@@ -46,9 +47,8 @@ const draw = (e: TouchEvent) => {
       <router-link to="/map"><button>返回</button></router-link>
       <router-link to="/craft"><button>面塑</button></router-link>
     </div>
-    <div class="text">满文（ᠮᠠᠨᠵᡠ
-      ᡥᡝᡵᡤᡝᠨ）作为满族的独特文字，展现着深厚的历史文化底蕴。这独特的文字体系源自于传统的回鹘式蒙古文，经过满族智慧的创新与改进而形成。满文不仅仅是一种文字，更是清朝时期的法定文字，广泛用于各类文献、图书、档案、碑刻、谱牒等。在中国55个少数民族古籍文献中，满文数量丰富，种类繁多，为其中的佼佼者。这一文字体系在中国文字史的少数民族语言领域具有重要地位，不仅是中华民族文化遗产的重要组成部分，更承载着深厚的历史文化价值。
-    </div>
+    <ask class="text"
+      defaultText="满文（ᠮᠠᠨᠵᡠ ᡥᡝᡵᡤᡝᠨ）作为满族的独特文字，展现着深厚的历史文化底蕴。这独特的文字体系源自于传统的回鹘式蒙古文，经过满族智慧的创新与改进而形成。满文不仅仅是一种文字，更是清朝时期的法定文字，广泛用于各类文献、图书、档案、碑刻、谱牒等。在中国55个少数民族古籍文献中，满文数量丰富，种类繁多，为其中的佼佼者。这一文字体系在中国文字史的少数民族语言领域具有重要地位，不仅是中华民族文化遗产的重要组成部分，更承载着深厚的历史文化价值。" />
     <canvas height="400px" ref="tabletRef" width="100px" @touchstart="draw" @touchmove="draw"></canvas>
     <div class="tip">点击进行书写</div>
   </div>

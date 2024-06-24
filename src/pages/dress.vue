@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { reactive, computed } from 'vue'
+import ask from '../components/ask.vue'
 
 const state = reactive({ a: 0, b: 0, c: 0, d: 0, e: 0, f: 0, g: 0 })
 const data = computed(() => {
@@ -21,9 +22,8 @@ const change = (k: keyof typeof state) => {
 <template>
   <div class="background">
     <router-link to="/map"><button>返回</button></router-link>
-    <div class="text">
-      满族服饰历史悠久，起源可追溯至7000年前。上世纪30年代，男女穿直筒式大袖长袍，女性旗袍有花卉纹饰。40年代后，受时尚影响，男性旗袍废弃，女性旗袍变为窄袖、贴身、收腰，袍长及踝。
-    </div>
+    <ask class="text"
+      defaultText="满族服饰历史悠久，起源可追溯至7000年前。上世纪30年代，男女穿直筒式大袖长袍，女性旗袍有花卉纹饰。40年代后，受时尚影响，男性旗袍废弃，女性旗袍变为窄袖、贴身、收腰，袍长及踝。" />
     <div class="layers">
       <div class="base"></div>
       <div v-for="i in data" :style="i"></div>
