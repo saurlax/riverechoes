@@ -1,18 +1,20 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 
-const assets = import.meta.glob('/src/assets/**/*.webp')
+const assets = import.meta.glob('/src/assets/**/*.webp', { eager: false, as: 'url' })
 const loadCurrent = ref('')
 const loadCount = ref(0)
 const loadTotal = Object.keys(assets).length
 const loadState = computed(() => loadCount.value / loadTotal * 100)
 
 onMounted(() => {
-  Object.entries(assets).forEach(([path, resolve]) => {
-    resolve().then(() => {
+  Object.entries(assets).forEach(async ([path, resolve]) => {
+    const img = new Image()
+    img.onload = () => {
       loadCurrent.value = path
-      loadCount.value = loadCount.value + 1
-    })
+      loadCount.value += 1
+    }
+    img.src = await resolve()
   })
 })
 </script>
