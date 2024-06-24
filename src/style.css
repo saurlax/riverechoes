@@ -10,7 +10,7 @@ body {
 }
 
 #app {
-  position: fixed;
+  position: absolute;
   top: 0;
   bottom: 0;
   width: 100%;
@@ -41,7 +41,7 @@ button:active {
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
-  background-image: url('/assets/background.webp');
+  background-image: url('/src/assets/background.webp');
 }
 
 .text {

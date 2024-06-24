@@ -1,13 +1,15 @@
 <template>
   <div class="wrapper">
-    <RouterView />
+    <router-view />
   </div>
 </template>
 
 <style scoped>
 .wrapper {
   position: relative;
-  max-width: 60vh;
   margin: auto;
+  max-width: 60vh;
+  height: 100vh;
+  overflow: hidden;
 }
 </style>

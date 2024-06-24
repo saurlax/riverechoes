@@ -3,7 +3,7 @@ import { reactive, computed } from 'vue'
 
 const state = reactive({ a: 0, b: 0, c: 0, d: 0, e: 0, f: 0, g: 0 })
 const data = computed(() => {
-  return Object.entries(state).filter(([_, v]) => v).map(([k, v]) => `background-image: url('/assets/dress/${k}${v}.webp')`
+  return Object.entries(state).filter(([_, v]) => v).map(([k, v]) => `background-image: url('/src/assets/dress/${k}${v}.webp')`
   )
 })
 
@@ -20,7 +20,7 @@ const change = (k: keyof typeof state) => {
 
 <template>
   <div class="background">
-    <RouterLink to="/map"><button>返回</button></RouterLink>
+    <router-link to="/map"><button>返回</button></router-link>
     <div class="text">
       满族服饰历史悠久，起源可追溯至7000年前。上世纪30年代，男女穿直筒式大袖长袍，女性旗袍有花卉纹饰。40年代后，受时尚影响，男性旗袍废弃，女性旗袍变为窄袖、贴身、收腰，袍长及踝。
     </div>
@@ -42,10 +42,11 @@ const change = (k: keyof typeof state) => {
 
 <style scoped>
 .layers div {
-  position: fixed;
+  position: absolute;
   top: 0;
+  left: 0;
+  right: 0;
   bottom: 0;
-  width: 100vw;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -53,14 +54,14 @@ const change = (k: keyof typeof state) => {
 }
 
 .base {
-  background-image: url('/assets/dress/base.webp');
+  background-image: url('/src/assets/dress/base.webp');
 }
 
 .switch {
   width: 64px;
   display: inline-flex;
   flex-direction: column;
-  position: fixed;
+  position: absolute;
   bottom: 0;
   right: 0;
 }

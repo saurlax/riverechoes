@@ -4,17 +4,17 @@
 
 <template>
   <div class="background">
-    <RouterLink to="/dress"><button>梳妆</button></RouterLink>
-    <RouterLink to="/craft"><button>工艺</button></RouterLink>
-    <RouterLink to="/show"><button>表演</button></RouterLink>
-    <RouterLink to="/exhibition"><button>展览</button></RouterLink>
-    <RouterLink to="/sacrifice"><button>祭祀</button></RouterLink>
+    <router-link to="/dress"><button>梳妆</button></router-link>
+    <router-link to="/craft"><button>工艺</button></router-link>
+    <router-link to="/show"><button>表演</button></router-link>
+    <router-link to="/exhibition"><button>展览</button></router-link>
+    <router-link to="/sacrifice"><button>祭祀</button></router-link>
   </div>
 </template>
 
 <style scoped>
 .background {
-  background-image: url('/assets/map.webp');
+  background-image: url('/src/assets/map.webp');
 }
 
 .background a {

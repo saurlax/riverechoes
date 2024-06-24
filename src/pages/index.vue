@@ -1,31 +1,56 @@
 <script setup lang="ts">
+import { computed, onMounted, ref } from 'vue'
+
+const assets = import.meta.glob('/src/assets/**/*.webp')
+const loadCurrent = ref('')
+const loadCount = ref(0)
+const loadTotal = Object.keys(assets).length
+const loadState = computed(() => loadCount.value / loadTotal * 100)
+
+onMounted(() => {
+  Object.entries(assets).forEach(([path, resolve]) => {
+    resolve().then(() => {
+      loadCurrent.value = path
+      loadCount.value = loadCount.value + 1
+    })
+  })
+})
 </script>
 
 <template>
   <div class="background">
-    <RouterLink to="/map"><button>开始游戏</button></RouterLink>
+    <div class="content">
+      <div v-if="loadState >= 100">
+        <router-link to="/map"><button>开始游戏</button></router-link>
+      </div>
+      <div v-else>
+        <div>加载中...({{ loadState.toFixed(2) }}%)</div>
+        <div>{{ loadCurrent }}</div>
+      </div>
+    </div>
   </div>
 </template>
 
 <style scoped>
 .background {
-  background-image: url('/assets/index.webp');
+  background-image: url('/src/assets/index.webp');
 }
 
 button {
   padding: 30px 50px;
   background-color: initial;
-  background-image: url('/assets/start.webp');
+  background-image: url('/src/assets/start.webp');
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
 }
 
-a {
+.content {
   position: absolute;
   width: 100%;
   bottom: 20%;
   display: flex;
   justify-content: center;
+  text-align: center;
 }
 </style>

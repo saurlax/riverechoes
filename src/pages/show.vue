@@ -1,6 +1,6 @@
 <template>
   <div class="background">
-    <RouterLink to="/map"><button>返回</button></RouterLink>
+    <router-link to="/map"><button>返回</button></router-link>
     <div class="text">
       满族传统的秧歌舞，又称扭秧歌或闹秧歌，是一项富有特色的民间歌舞艺术。这种群众性歌舞在满族社区中极为盛行，尤其在逢年过节，尤其是正月十五元宵节时更是热闹非凡。各村屯都会组织秧歌队，走街串巷，进行表演，为节日增添喜庆氛围。秧歌表演者的扮相丰富多彩，包括文人书生、老翁老妪等各种角色，形成了一场生动有趣的舞蹈和歌唱的盛宴。在表演中，歌舞交错，既有动感的舞步，又有富有情感的歌唱，呈现出丰富多样的文化内涵。
     </div>
@@ -14,17 +14,17 @@
 
 <style scoped>
 .background {
-  background-image: url('/assets/show/background.webp');
+  background-image: url('/src/assets/show/background.webp');
 }
 
 .text {
   background: #ffffff88;
-  position: fixed;
+  position: absolute;
   bottom: 0;
 }
 
 .layers div {
-  position: fixed;
+  position: absolute;
   top: 0;
   bottom: 0;
   width: 100%;
@@ -51,7 +51,7 @@
 }
 
 .actors {
-  background-image: url('/assets/show/actors.webp');
+  background-image: url('/src/assets/show/actors.webp');
   animation: swing 1s linear infinite alternate;
 }
 
@@ -70,7 +70,7 @@
 }
 
 .notes {
-  background-image: url('/assets/show/notes.webp');
+  background-image: url('/src/assets/show/notes.webp');
   animation: float 1s linear infinite alternate;
 }
 
@@ -85,7 +85,7 @@
 }
 
 .particles {
-  background-image: url('/assets/show/particles.webp');
+  background-image: url('/src/assets/show/particles.webp');
   animation: rotate 1s linear infinite alternate;
 }
 </style>

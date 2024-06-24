@@ -19,11 +19,11 @@ const change = () => {
 <template>
   <div class="background">
     <div>
-      <RouterLink to="/map"><button>返回</button></RouterLink>
-      <RouterLink to="/vr"><button>VR模式</button></RouterLink>
+      <router-link to="/map"><button>返回</button></router-link>
+      <router-link to="/vr"><button>VR模式</button></router-link>
       <button @click="change">切换展品</button>
     </div>
-    <div class="item" :style="`background-image: url('/assets/exhibition/${item}.webp')`"></div>
+    <div class="item" :style="`background-image: url('/src/assets/exhibition/${item}.webp')`"></div>
     <div class="text">
       <b>{{ info[item].name }}</b>
       <div>{{ info[item].desc }}</div>
@@ -34,11 +34,11 @@ const change = () => {
 
 <style scoped>
 .background {
-  background-image: url('/assets/exhibition/background.webp');
+  background-image: url('/src/assets/exhibition/background.webp');
 }
 
 .item {
-  position: fixed;
+  position: absolute;
   width: 160px;
   height: 160px;
   right: 10%;
@@ -50,7 +50,7 @@ const change = () => {
 }
 
 .text {
-  position: fixed;
+  position: absolute;
   bottom: 0;
   background: #ffffff88;
 }
