@@ -2,11 +2,20 @@
 import { onMounted, ref } from 'vue'
 
 const loaded = ref(false)
+const size = ref(0)
 
 onMounted(() => {
   window.onload = () => {
     loaded.value = true
   }
+  new PerformanceObserver((list) => {
+    let s = 0
+    list.getEntries().forEach((entry: any) => {
+      s += entry.transferSize ?? 0
+    })
+    size.value = size.value + s
+  }).observe({ entryTypes: ['resource'] })
+
 })
 </script>
 
@@ -14,7 +23,7 @@ onMounted(() => {
   <div class="background">
     <div class="content">
       <router-link v-if="loaded" to="/map"><button>开始游戏</button></router-link>
-      <div v-else>加载中...</div>
+      <div v-else>加载中({{ (size / 1000).toFixed(2) }}KB)</div>
     </div>
   </div>
 </template>
