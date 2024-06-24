@@ -8,6 +8,9 @@ onMounted(() => {
   window.onload = () => {
     loaded.value = true
   }
+  setTimeout(() => {
+    loaded.value = true
+  }, 2000)
   new PerformanceObserver((list) => {
     let s = 0
     list.getEntries().forEach((entry: any) => {
@@ -15,7 +18,6 @@ onMounted(() => {
     })
     size.value = size.value + s
   }).observe({ entryTypes: ['resource'] })
-
 })
 </script>
 
