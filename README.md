@@ -1,6 +1,6 @@
 # 辽河满韵
 
-[![Netlify Status](https://api.netlify.com/api/v1/badges/9e095801-3d39-4d02-af5f-a722134a769f/deploy-status)](https://app.netlify.com/sites/comfy-sprite-721f85/deploys)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/9e095801-3d39-4d02-af5f-a722134a769f/deploy-status)](https://app.netlify.com/sites/riverechoes/deploys)
 ![Vue](https://shields.io/badge/Vue-green)
 ![Vue](https://shields.io/badge/TypeScript-blue)
 ![Aframe](https://shields.io/badge/Aframe-deeppink)
