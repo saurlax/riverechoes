@@ -42,14 +42,15 @@ export function signedHeader(
 }
 
 export async function vivogpt(prompt: string, systemPrompt: string) {
-  const url = ["https://api-ai.vivo.com.cn", "/vivogpt/completions"]
-  const appid = process.env.VIVO_APP_ID
-  const appkey = process.env.VIVO_APP_KEY
+  const url = "https://api-ai.vivo.com.cn/vivogpt/completions"
+  const appid = process.env.VIVO_APP_ID!
+  const appkey = process.env.VIVO_APP_KEY!
   const model = "vivo-BlueLM-TB"
   const requestId = uuidv4()
   const sessionId = uuidv4()
-  const res = await fetch(`${url.join("")}?requestId=${requestId}`, {
-    headers: signedHeader("POST", url[1], `requestId=${requestId}`, appid!, appkey!),
+  const queryString = `requestId=${requestId}`
+  const res = await fetch(`${url}?${queryString}`, {
+    headers: signedHeader("POST", "/vivogpt/completions", queryString, appid, appkey),
     method: "POST",
     body: JSON.stringify({
       prompt,
@@ -61,4 +62,30 @@ export async function vivogpt(prompt: string, systemPrompt: string) {
 
   const body = await res.json()
   return body.data?.content ?? body.msg
+}
+
+export interface POI {
+  name: string;
+  address: string;
+  province: string;
+  city: string;
+  district: string;
+  nid: string;
+  phone: string;
+  location: string;
+  distance: number;
+}
+
+export async function vivopoi(keywords: string, city: string) {
+  const url = "https://api-ai.vivo.com.cn/search/geo"
+  const appid = process.env.VIVO_APP_ID!
+  const appkey = process.env.VIVO_APP_KEY!
+  const queryString = `keywords=${keywords}&city=${city}`
+
+  const response = await fetch(`${url}?${queryString}`, {
+    headers: signedHeader("GET", "/search/geo", queryString, appid, appkey),
+    method: "GET"
+  })
+  const body = await response.json()
+  return body.pois as POI[]
 }
