@@ -27,7 +27,7 @@ const drag = (e: TouchEvent) => {
     </div>
     <div class="final">
       <div>拖动拼装面塑</div>
-      <img src="/assets/craft/final.webp" @load="load" />
+      <img :src="`/assets/craft/final.webp`" @load="load" />
     </div>
   </div>
 </template>
