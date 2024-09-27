@@ -8,14 +8,28 @@ const props = defineProps<{
 const text = ref(props.defaultText)
 const question = ref('')
 
+// 定义发送请求的函数
+const askQuestion = async () => {
+  if (question.value.trim() === '') return; // 如果问题为空，则不发送请求
 
+  try {
+    // 调用在 server/api/chat.ts 中定义的 API
+    const response = await axios.post('/api/chat', { question: question.value });
+    text.value = response.data.answer || '无法获取回答';
+  } catch (error) {
+    console.error('Error:', error);
+    text.value = '请求出错，请重试';
+  }
+
+  question.value = ''; // 清空输入框
+}
 </script>
 
 <template>
   <div v-bind="$attrs">
     <div class="upper">
       <input v-model="question" />
-      <button>提问</button>
+      <button @click="askQuestion">提问</button>
     </div>
     <div>{{ text }}</div>
   </div>
