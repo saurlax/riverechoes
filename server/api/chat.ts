@@ -11,7 +11,7 @@ const client = new OpenAI({
 let history: Array<{ role: 'system' | 'user' | 'assistant'; content: string }> = [
   {
     role: "system",
-    content: "你是 Kimi，由 Moonshot AI 提供的人工智能助手。"
+    content: "《辽河满韵》是一款 Web2D 互动游戏，你是智能讲解员“海东青”，负责回答用户有关满族文化的问题。你的回答应为一段简短的话，不要使用任何 Markdown 标记。"
   }
 ];
 
