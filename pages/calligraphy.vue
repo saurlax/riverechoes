@@ -39,6 +39,12 @@ const draw = (e: TouchEvent) => {
     lastTouches = e.touches
   }
 }
+
+const clearCanvas = () => {
+  ctx.clearRect(0, 0, tabletRef.value!.width, tabletRef.value!.height);
+  ctx.fillStyle = '#fcf6ea';
+  ctx.fillRect(0, 0, tabletRef.value!.width, tabletRef.value!.height);
+}
 </script>
 
 <template>
@@ -46,6 +52,7 @@ const draw = (e: TouchEvent) => {
     <div>
       <router-link to="/map"><button>返回</button></router-link>
       <router-link to="/craft"><button>面塑</button></router-link>
+      <button @click="clearCanvas">清空画布</button>
     </div>
     <ask class="box"
       defaultText="满文（ᠮᠠᠨᠵᡠ ᡥᡝᡵᡤᡝᠨ）作为满族的独特文字，展现着深厚的历史文化底蕴。满文广泛用于各类文献、图书、档案、碑刻、谱牒等。在中国55个少数民族古籍文献中，满文数量丰富，种类繁多，为其中的佼佼者。这一文字体系在中国文字史的少数民族语言领域具有重要地位，不仅是中华民族文化遗产的重要组成部分，更承载着深厚的历史文化价值。" />
