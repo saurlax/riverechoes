@@ -1,27 +1,35 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import axios from 'axios'
 
 const props = defineProps<{
   defaultText: string
 }>()
-const text = ref(props.defaultText)
+const answer = ref(props.defaultText)
 const question = ref('')
 
 // 定义发送请求的函数
 const askQuestion = async () => {
-  if (question.value.trim() === '') return; // 如果问题为空，则不发送请求
+  if (!question.value.trim()) return;
 
   try {
-    // 调用在 server/api/chat.ts 中定义的 API
-    const response = await axios.post('/api/chat', { question: question.value });
-    text.value = response.data.answer || '无法获取回答';
-  } catch (error) {
-    console.error('Error:', error);
-    text.value = '请求出错，请重试';
-  }
+    const stream = await $fetch<ReadableStream>('/api/chat', {
+      method: 'POST',
+      body: { question: question.value },
+      responseType: "stream",
+    })
 
-  question.value = ''; // 清空输入框
+    const reader = stream.pipeThrough(new TextDecoderStream()).getReader();
+    let readResult = await reader.read();
+    answer.value = '';
+    while (!readResult.done) {
+      const data = JSON.parse(readResult.value.slice(6));
+      answer.value += data.result;
+      readResult = await reader.read();
+    }
+    question.value = '';
+  } catch (e: any) {
+    answer.value = e.data.message ?? e.message ?? e;
+  }
 }
 </script>
 
@@ -31,7 +39,7 @@ const askQuestion = async () => {
       <input v-model="question" />
       <button @click="askQuestion">提问</button>
     </div>
-    <div>{{ text }}</div>
+    <div>{{ answer }}</div>
   </div>
 </template>
 
