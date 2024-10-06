@@ -12,19 +12,25 @@ const askQuestion = async () => {
   if (!question.value.trim()) return;
 
   try {
-    const stream = await $fetch<ReadableStream>('https://riverechoes.saurlax.com/api/chat', {
+    const stream = await $fetch<ReadableStream>('/api/chat', {
       method: 'POST',
       body: { question: question.value },
       responseType: "stream",
     })
 
     const reader = stream.pipeThrough(new TextDecoderStream()).getReader();
-    let readResult = await reader.read();
+    let chunk = await reader.read();
     answer.value = '';
-    while (!readResult.done) {
-      const data = JSON.parse(readResult.value.slice(6));
-      answer.value += data.result;
-      readResult = await reader.read();
+    while (!chunk.done) {
+      console.log(chunk.value);
+      chunk.value.trim().split('\n').forEach((text: string) => {
+        // remove the first 6 characters "data: "
+        if (text) {
+          const data = JSON.parse(text.slice(6));
+          answer.value += data.result;
+        }
+      })
+      chunk = await reader.read();
     }
     question.value = '';
   } catch (e: any) {

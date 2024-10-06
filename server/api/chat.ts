@@ -35,7 +35,7 @@ export default defineEventHandler(async (event) => {
     stream: true,
   };
 
-  const stream = await $fetch<ReadableStream>(
+  const stream = await $fetch<ReadableStream<string>>(
     `${MODEL_URL}?access_token=${accessToken}`,
     {
       method: "POST",
@@ -44,5 +44,6 @@ export default defineEventHandler(async (event) => {
     }
   );
 
+  event.node.res.setHeader("Content-Type", "text/event-stream");
   return stream;
 });
