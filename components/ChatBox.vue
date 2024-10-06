@@ -12,7 +12,7 @@ const askQuestion = async () => {
   if (!question.value.trim()) return;
 
   try {
-    const stream = await $fetch<ReadableStream>('/api/chat', {
+    const stream = await $fetch<ReadableStream>('https://riverechoes.saurlax.com/api/chat', {
       method: 'POST',
       body: { question: question.value },
       responseType: "stream",
@@ -28,7 +28,8 @@ const askQuestion = async () => {
     }
     question.value = '';
   } catch (e: any) {
-    answer.value = e.data.message ?? e.message ?? e;
+    console.error(e);
+    answer.value = e.data?.message ?? e.message ?? e;
   }
 }
 </script>
