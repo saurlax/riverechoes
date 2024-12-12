@@ -38,6 +38,20 @@ const askQuestion = async () => {
     answer.value = e.data?.message ?? e.message ?? e;
   }
 }
+
+//定义语音播报相关内容
+const { $speak } = useNuxtApp();
+const speakText = async () => {
+  // 停止当前语音播放
+  window.speechSynthesis.cancel();
+
+  try {
+    // 使用类型断言
+    await ($speak as (text: string) => Promise<void>)(answer.value);
+  } catch (error) {
+    console.error('语音播报出错:', error);
+  }
+}
 </script>
 
 <template>
@@ -46,6 +60,7 @@ const askQuestion = async () => {
       <input v-model="question" />
       <button @click="askQuestion">提问</button>
     </div>
+    <button @click="speakText">智能讲解员海东青：</button>
     <div>{{ answer }}</div>
   </div>
 </template>
@@ -54,6 +69,7 @@ const askQuestion = async () => {
 .upper {
   display: flex;
   justify-content: space-between;
+  margin-bottom: 4px;
 }
 
 button {
