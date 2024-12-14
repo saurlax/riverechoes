@@ -6,5 +6,8 @@ export default defineNuxtConfig({
       title: "辽河满韵",
     },
   },
-  plugins: ['~/plugins/speechSynthesis.js'],
+  plugins: [
+      '~/plugins/speechSynthesis.js',
+      '~/plugins/element-plus.js'
+  ],
 });

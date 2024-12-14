@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { reactive, computed } from 'vue'
+import { reactive, computed, ref} from 'vue'
 import ask from '../components/ChatBox.vue'
-
+import html2canvas from 'html2canvas'
+import {ElMessage} from "element-plus";
 const state = reactive({ a: 0, b: 0, c: 0, d: 0, e: 0, f: 0, g: 0 })
 const data = computed(() => {
   return Object.entries(state).filter(([_, v]) => v).map(([k, v]) => `background-image: url('/assets/dress/${k}${v}.webp')`
@@ -17,10 +18,38 @@ const change = (k: keyof typeof state) => {
   }
 }
 
+// 获取保存区域的引用
+const saveArea = ref<HTMLElement | null>(null)
+const downloadMessage = ref<string | null>(null)
+
+// 图片保存功能
+const saveImage = () => {
+  if (saveArea.value) {
+    html2canvas(saveArea.value, {
+      ignoreElements: (element) => {
+        // 排除 .switch 和 ask 组件的元素
+        return element.matches('button') || element.matches('.box');
+      }
+    }).then((canvas) => {
+      const dataUrl = canvas.toDataURL('image/png');
+      const link = document.createElement('a');
+      link.href = dataUrl;
+      link.download = 'saved_image.png';  // 设置文件名
+      link.click();
+      downloadMessage.value = '图片已保存！';  // 提示用户保存成功
+      ElMessage.success( downloadMessage.value )  // 使用 Element Plus 提示框
+    }).catch((error) => {
+      console.error('保存图片失败:', error);
+      downloadMessage.value = '保存图片失败，请重试。';
+      ElMessage.success( downloadMessage.value )
+    });
+  }
+};
+
 </script>
 
 <template>
-  <div class="background">
+  <div class="background" ref="saveArea">
     <router-link to="/map"><button>返回</button></router-link>
     <ask class="box"
       defaultText="满族服饰历史悠久，起源可追溯至7000年前。上世纪30年代，男女穿直筒式大袖长袍，女性旗袍有花卉纹饰。40年代后，受时尚影响，男性旗袍废弃，女性旗袍变为窄袖、贴身、收腰，袍长及踝。" />
@@ -36,6 +65,7 @@ const change = (k: keyof typeof state) => {
       <button @click="change('e')">头饰{{ state.e }}</button>
       <button @click="change('f')">首饰{{ state.f }}</button>
       <button @click="change('g')">手饰{{ state.g }}</button>
+      <button @click="saveImage">保存</button>
     </div>
   </div>
 </template>
