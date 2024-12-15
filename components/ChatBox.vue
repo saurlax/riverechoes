@@ -68,7 +68,6 @@ button {
 
 input {
   flex-grow: 1;
-  display: block;
   box-sizing: border-box;
   outline: none;
   padding: 4px;
