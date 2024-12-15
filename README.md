@@ -1,9 +1,6 @@
 # 辽河满韵
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/9e095801-3d39-4d02-af5f-a722134a769f/deploy-status)](https://app.netlify.com/sites/riverechoes/deploys)
-![Vue](https://shields.io/badge/Vue-green)
-![Vue](https://shields.io/badge/TypeScript-blue)
-![Aframe](https://shields.io/badge/Aframe-deeppink)
 
 《辽河满韵》是一款以满族文化为主题的宣传游戏，属于文化传承与教育类游戏。游戏的主要目的是通过互动性和娱乐性，向玩家传递满族文化的知识、价值观念和历史背景，以促进文化的保护、传承和宣传。与传统的教科书或博物馆展览相比，《辽河满韵》更注重玩家的参与和互动，通过沉浸式的体验让玩家更深入地了解和体验目标文化。
 
@@ -14,3 +11,9 @@
 - 传统制作体验：玩家可以亲自参与制作糖画、面塑等满族传统手工艺品和萨满传说、祭祖礼俗等传统仪式中的祭祀器具。让玩家更好地理解传统文化的制作过程，同时也增强了他们的参与感和亲身体验。
 - 艺术表演展示：游戏中包括满族艺术团、花棍舞等表演，为玩家展现满族文化的艺术魅力。通过虚拟表演提供一种全新的方式，使玩家近距离感受满族传统艺术的美妙。
 
+## 启动项目
+
+```bash
+npm i
+npm run dev
+```
