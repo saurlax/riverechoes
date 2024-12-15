@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { reactive, computed, ref} from 'vue'
+import { reactive, computed, ref } from 'vue'
 import ask from '../components/ChatBox.vue'
 import html2canvas from 'html2canvas'
-import {ElMessage} from "element-plus";
 const state = reactive({ a: 0, b: 0, c: 0, d: 0, e: 0, f: 0, g: 0 })
 const data = computed(() => {
   return Object.entries(state).filter(([_, v]) => v).map(([k, v]) => `background-image: url('/assets/dress/${k}${v}.webp')`
@@ -20,7 +19,6 @@ const change = (k: keyof typeof state) => {
 
 // 获取保存区域的引用
 const saveArea = ref<HTMLElement | null>(null)
-const downloadMessage = ref<string | null>(null)
 
 // 图片保存功能
 const saveImage = () => {
@@ -34,14 +32,10 @@ const saveImage = () => {
       const dataUrl = canvas.toDataURL('image/png');
       const link = document.createElement('a');
       link.href = dataUrl;
-      link.download = 'saved_image.png';  // 设置文件名
+      link.download = 'dressing.png';
       link.click();
-      downloadMessage.value = '图片已保存！';  // 提示用户保存成功
-      ElMessage.success( downloadMessage.value )  // 使用 Element Plus 提示框
     }).catch((error) => {
-      console.error('保存图片失败:', error);
-      downloadMessage.value = '保存图片失败，请重试。';
-      ElMessage.success( downloadMessage.value )
+      alert(`保存失败：${error}`);
     });
   }
 };
