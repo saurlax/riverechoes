@@ -67,6 +67,7 @@ button {
 }
 
 input {
+  width: 100px;
   flex-grow: 1;
   box-sizing: border-box;
   outline: none;
