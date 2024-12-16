@@ -10,6 +10,7 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "aframe": "^1.6.0",
     "html2canvas": "^1.4.1",
     "nuxt": "^3.13.0",
     "vue": "latest",

@@ -19,7 +19,8 @@ const change = () => {
 <template>
   <div class="background">
     <div>
-      <router-link to="/map"><button>返回</button></router-link>
+      <RouterLink to="/map"><button>返回</button></RouterLink>
+      <RouterLink to="/vr"><button>VR模式</button></RouterLink>
       <button @click="change">切换展品</button>
     </div>
     <div class="item" :style="`background-image: url('/assets/exhibition/${item}.webp')`"></div>

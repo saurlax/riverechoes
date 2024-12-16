@@ -24,7 +24,7 @@ onMounted(() => {
 <template>
   <div class="background">
     <div class="content">
-      <router-link v-if="loaded" to="/map"><button>开始游戏</button></router-link>
+      <RouterLink v-if="loaded" to="/map"><button>开始游戏</button></RouterLink>
       <div v-else>加载中({{ (size / 1000).toFixed(2) }}KB)</div>
     </div>
   </div>
