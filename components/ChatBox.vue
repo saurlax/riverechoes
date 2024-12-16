@@ -8,6 +8,7 @@ const chatid = ref('')
 const answer = ref(props.text)
 const question = ref('')
 const answerDelta = ref('')
+const loading = ref(false)
 
 onMounted(async () => {
   chatid.value = localStorage.getItem('chatid') ?? ''
@@ -42,6 +43,7 @@ const askQuestion = async () => {
     })
 
     const reader = stream.pipeThrough(new TextDecoderStream()).getReader();
+    loading.value = true;
     let chunk = await reader.read();
     answer.value = '';
     while (!chunk.done) {
@@ -62,6 +64,7 @@ const askQuestion = async () => {
     console.error(e);
     answer.value += e.data?.message ?? e.message ?? e;
   }
+  loading.value = false;
 }
 
 const speakText = async () => {
@@ -76,7 +79,10 @@ const speakText = async () => {
       <button @click="askQuestion">提问</button>
       <button @click="speakText">语音讲解</button>
     </div>
-    <div>{{ answer }}</div>
+    <div>
+      <span v-if="loading">（思考中）</span>
+      <span>{{ answer }}</span>
+    </div>
   </div>
 </template>
 
