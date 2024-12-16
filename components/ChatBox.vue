@@ -2,19 +2,42 @@
 import { ref } from 'vue'
 
 const props = defineProps<{
-  defaultText: string
+  text: string
 }>()
-const answer = ref(props.defaultText)
+const chatid = ref('')
+const answer = ref(props.text)
 const question = ref('')
+const answerDelta = ref('')
 
-// 定义发送请求的函数
+onMounted(async () => {
+  chatid.value = localStorage.getItem('chatid') ?? ''
+
+  if (!chatid.value) {
+    const data = await $fetch<{ chatid: string }>('/api/chatid');
+    chatid.value = data.chatid;
+    localStorage.setItem('chatid', chatid.value);
+  }
+})
+
+onMounted(() => {
+  setInterval(() => {
+    if (answerDelta.value) {
+      answer.value += answerDelta.value.slice(0, 5);
+      answerDelta.value = answerDelta.value.slice(5);
+    }
+  }, 50);
+})
+
 const askQuestion = async () => {
   if (!question.value.trim()) return;
 
   try {
     const stream = await $fetch<ReadableStream>('/api/chat', {
       method: 'POST',
-      body: { question: question.value },
+      body: {
+        chatid: chatid.value,
+        question: question.value
+      },
       responseType: "stream",
     })
 
@@ -24,10 +47,12 @@ const askQuestion = async () => {
     while (!chunk.done) {
       console.log(chunk.value);
       chunk.value.trim().split('\n').forEach((text: string) => {
-        // remove the first 6 characters "data: "
         if (text) {
-          const data = JSON.parse(text.slice(6));
-          answer.value += data.result;
+          // remove the first 6 characters "data: "
+          try {
+            const data = JSON.parse(text.slice(6));
+            answerDelta.value += data.answer;
+          } catch { }
         }
       })
       chunk = await reader.read();
@@ -35,7 +60,7 @@ const askQuestion = async () => {
     question.value = '';
   } catch (e: any) {
     console.error(e);
-    answer.value = e.data?.message ?? e.message ?? e;
+    answer.value += e.data?.message ?? e.message ?? e;
   }
 }
 

@@ -46,7 +46,7 @@ const saveImage = () => {
   <div class="background" ref="saveArea">
     <RouterLink to="/map"><button>返回</button></RouterLink>
     <ChatBox class="box"
-      defaultText="满族服饰历史悠久，起源可追溯至7000年前。上世纪30年代，男女穿直筒式大袖长袍，女性旗袍有花卉纹饰。40年代后，受时尚影响，男性旗袍废弃，女性旗袍变为窄袖、贴身、收腰，袍长及踝。" />
+      text="满族服饰历史悠久，起源可追溯至7000年前。上世纪30年代，男女穿直筒式大袖长袍，女性旗袍有花卉纹饰。40年代后，受时尚影响，男性旗袍废弃，女性旗袍变为窄袖、贴身、收腰，袍长及踝。" />
     <div class="layers">
       <div class="base"></div>
       <div v-for="i in data" :style="i"></div>
