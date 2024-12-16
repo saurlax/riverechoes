@@ -70,7 +70,7 @@ const speakText = async () => {
 </script>
 
 <template>
-  <div v-bind="$attrs">
+  <div class="chatbox" v-bind="$attrs">
     <div class="upper">
       <input v-model="question" />
       <button @click="askQuestion">提问</button>
