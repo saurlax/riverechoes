@@ -7,6 +7,7 @@ const props = defineProps<{
 const chatid = ref('')
 const answer = ref(props.text)
 const question = ref('')
+const currentQuestion = ref('')
 const answerDelta = ref('')
 const loading = ref(false)
 
@@ -33,6 +34,7 @@ const askQuestion = async () => {
   if (!question.value.trim()) return;
 
   try {
+    currentQuestion.value = question.value;
     const stream = await $fetch<ReadableStream>('/api/chat', {
       method: 'POST',
       body: {
@@ -50,7 +52,6 @@ const askQuestion = async () => {
       console.log(chunk.value);
       chunk.value.trim().split('\n').forEach((text: string) => {
         if (text) {
-          // remove the first 6 characters "data: "
           try {
             const data = JSON.parse(text.slice(6));
             answerDelta.value += data.answer;

@@ -1,22 +1,8 @@
-async function createChat() {
-  const data = await $fetch<{ conversation_id: string }>(
-    "https://qianfan.baidubce.com/v2/app/conversation",
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-Appbuilder-Authorization": `Bearer ${process.env.APPBUILDER_TOKEN}`,
-      },
-      body: {
-        app_id: process.env.APPBUILDER_APP_ID,
-      },
-    }
-  );
-  return data.conversation_id;
-}
+import { v4 as uuidv4 } from 'uuid';
 
+// 生成蓝心大模型会话ID (使用UUID)
 export default defineEventHandler(async (event) => {
   return {
-    chatid: await createChat(),
+    chatid: uuidv4(), // 蓝心大模型使用UUID作为sessionId
   };
 });
