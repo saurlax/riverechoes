@@ -1,27 +1,60 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 
 const props = defineProps<{
   text: string
 }>()
+
+
 const chatid = ref('')
 const answer = ref(props.text)
 const question = ref('')
 const currentQuestion = ref('')
 const answerDelta = ref('')
 const loading = ref(false)
+const userLocation = ref(null) 
+
+
+function needsLocationInfo(text: string): boolean {
+  const locationKeywords = ['附近', '周围', '周边', '身边', '就近', '旁边', '边上', '不远', '近处'];
+  return locationKeywords.some(keyword => text.includes(keyword));
+}
+
+
+async function getUserLocation() {
+  if (!navigator.geolocation) {
+    console.log('浏览器不支持地理定位');
+    return null;
+  }
+  
+  try {
+    const position = await new Promise<GeolocationPosition>((resolve, reject) => {
+      navigator.geolocation.getCurrentPosition(resolve, reject, {
+        enableHighAccuracy: true,
+        timeout: 5000,
+        maximumAge: 0
+      });
+    });
+    
+    return {
+      latitude: position.coords.latitude,
+      longitude: position.coords.longitude
+    };
+  } catch (error) {
+    console.warn('获取位置失败:', error);
+    return null;
+  }
+}
+
 
 onMounted(async () => {
   chatid.value = localStorage.getItem('chatid') ?? ''
-
   if (!chatid.value) {
     const data = await $fetch<{ chatid: string }>('/api/chatid');
     chatid.value = data.chatid;
     localStorage.setItem('chatid', chatid.value);
   }
-})
-
-onMounted(() => {
+  
   setInterval(() => {
     if (answerDelta.value) {
       answer.value += answerDelta.value.slice(0, 5);
@@ -35,80 +68,144 @@ const askQuestion = async () => {
 
   try {
     currentQuestion.value = question.value;
+    
+    let coords = null;
+    if (needsLocationInfo(question.value)) {
+      coords = userLocation.value;
+      if (!coords) {
+        coords = await getUserLocation();
+        if (coords) {
+          userLocation.value = coords;
+          console.log('获取到位置信息:', coords);
+        }
+      }
+    }
+    
     const stream = await $fetch<ReadableStream>('/api/chat', {
       method: 'POST',
       body: {
         chatid: chatid.value,
-        question: question.value
+        question: question.value,
+        coords: coords 
       },
       responseType: "stream",
     })
+
 
     const reader = stream.pipeThrough(new TextDecoderStream()).getReader();
     loading.value = true;
     let chunk = await reader.read();
     answer.value = '';
+    
     while (!chunk.done) {
-      console.log(chunk.value);
       chunk.value.trim().split('\n').forEach((text: string) => {
         if (text) {
           try {
             const data = JSON.parse(text.slice(6));
             answerDelta.value += data.answer;
-          } catch { }
+          } catch (e) {
+            
+          }
         }
       })
       chunk = await reader.read();
     }
+    
     question.value = '';
   } catch (e: any) {
     console.error(e);
-    answer.value += e.data?.message ?? e.message ?? e;
+    answer.value = e.data?.message ?? e.message ?? String(e);
+  } finally {
+    loading.value = false;
   }
-  loading.value = false;
 }
+
 
 const speakText = async () => {
   speak(answer.value);
+}
+
+
+const refreshLocation = async () => {
+  try {
+    const position = await getUserLocation();
+    if (position) {
+      userLocation.value = position;
+      answer.value = `已更新您的位置信息，可以开始询问附近的地点了`;
+    } else {
+      answer.value = `无法获取您的位置信息，请检查浏览器权限设置`;
+    }
+  } catch (e) {
+    answer.value = `获取位置失败: ${e.message || '未知错误'}`;
+  }
 }
 </script>
 
 <template>
   <div class="chatbox" v-bind="$attrs">
     <div class="upper">
-      <input v-model="question" />
+      <input 
+        v-model="question" 
+        placeholder="输入问题" 
+        @keyup.enter="askQuestion"
+      />
       <button @click="askQuestion">提问</button>
-      <button @click="speakText">语音讲解</button>
+      <button @click="speakText">语音</button>
+      <button @click="refreshLocation" title="更新位置">定位</button>
     </div>
-    <div>
-      <span v-if="loading">（思考中）</span>
+    <div class="answer-container">
+      <span v-if="loading" class="thinking">（思考中）</span>
       <span>{{ answer }}</span>
     </div>
   </div>
 </template>
 
 <style scoped>
+.chatbox {
+  width: 100%;
+}
+
 .upper {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 4px;
+  gap: 8px;
+  margin-bottom: 8px;
 }
 
 button {
   font-size: 0.8rem;
+  padding: 4px 8px;
+  cursor: pointer;
 }
 
+
 input {
-  width: 100px;
   flex-grow: 1;
   box-sizing: border-box;
   outline: none;
-  padding: 4px;
+  padding: 4px 10px;
   border: 1px solid #bdbdbd;
+  border-radius: 4px;
+}
+
+input::placeholder {
+  color: #aaa;
+  font-size: 0.8rem;
 }
 
 input:hover,
 input:focus {
   border-color: #757575;
+}
+
+.answer-container {
+  min-height: 20px;
+  line-height: 1.5;
+}
+
+.thinking {
+  color: #666;
+  font-style: italic;
+  margin-right: 8px;
 }
 </style>

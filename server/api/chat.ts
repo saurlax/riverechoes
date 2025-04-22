@@ -19,6 +19,12 @@ function needsPOIRecommendation(question: string): boolean {
          themeKeywords.some(keyword => question.includes(keyword));
 }
 
+// 位置关键词检测函数
+function needsLocationBasedSearch(question: string): boolean {
+  const locationKeywords = ['附近', '周围', '周边', '身边', '就近', '旁边', '边上', '不远', '近处'];
+  return locationKeywords.some(keyword => question.includes(keyword));
+}
+
 function extractLocation(question: string): { city: string, province: string } {
   const provinceMap = {
     '华北': ['北京市', '天津市', '河北省', '山西省', '内蒙古自治区'],
@@ -172,21 +178,32 @@ function escapeSSEText(text: string): string {
     .replace(/\r/g, '\\r');
 }
 
-async function searchVivoPOI(keywords: string, city: string, province?: string) {
+// 添加坐标支持
+async function searchVivoPOI(keywords: string, city: string, province?: string, coords?: { latitude: number, longitude: number }) {
   try {
     const appId = process.env.VIVO_APP_ID || '2025432539';
     const appKey = process.env.VIVO_APP_KEY || 'GJmWCkkwVdqtjLPj';
     const uri = '/search/geo';
     const method = 'GET';
     
-    const searchArea = city || province || '北京';
-    
-    const queryParams = {
+    // 基本参数
+    const queryParams: any = {
       keywords,
-      city: searchArea,
       page_num: '1',
       page_size: '5'
     };
+    
+    // 如果有坐标，优先使用坐标进行周边搜索
+    if (coords) {
+      console.log("使用坐标搜索POI:", coords);
+      queryParams.location = `${coords.longitude},${coords.latitude}`;
+      queryParams.radius = '20000';
+    } else {
+      // 否则使用城市名称搜索
+      const searchArea = city || province || '北京';
+      queryParams.city = searchArea;
+      console.log("使用城市搜索POI:", searchArea);
+    }
     
     const { timestamp, nonce, signature, signedHeaders } = generateSignature(
       appId, appKey, method, uri, queryParams
@@ -205,7 +222,6 @@ async function searchVivoPOI(keywords: string, city: string, province?: string) 
     };
     
     console.log("VIVO POI API 请求:", url);
-    console.log("搜索区域:", searchArea);
     
     const response = await fetch(url, { method, headers });
     
@@ -266,8 +282,9 @@ function formatPOIRecommendations(pois) {
   ).join('\n\n');
 }
 
-function generatePOIIntroduction(question: string, city: string, province?: string) {
-  const area = city || province || '北京';
+// 修改generatePOIIntroduction，支持位置搜索情况
+function generatePOIIntroduction(question: string, city: string, province?: string, isNearbySearch: boolean = false) {
+  const area = isNearbySearch ? '您附近' : (city || province || '北京');
   
   if (question.includes('满族')) {
     return `为您找到${area}的以下与满族文化相关的地点：`;
@@ -335,18 +352,39 @@ export default defineEventHandler(async (event) => {
   
   if (needsPOIRecommendation(body.question)) {
     try {
+      // 检查是否需要基于位置的搜索
+      const useLocationBasedSearch = needsLocationBasedSearch(body.question);
+      
+      // 从请求体中获取位置信息（由前端传入）
+      const userCoords = body.coords || null;
+      
+      // 提取问题中的城市和省份
       const { city, province } = extractLocation(body.question);
-      console.log('检测到城市:', city, '省份:', province);
+      
+      // 如果问题中明确指定了城市/省份，则优先使用问题中的位置
+      // 否则如果是基于位置的搜索，使用用户位置
+      const searchCity = city !== '北京' ? city : useLocationBasedSearch ? null : city;
+      console.log('最终搜索城市:', searchCity, '省份:', province);
+      console.log('是否使用位置搜索:', useLocationBasedSearch);
+      console.log('用户坐标:', userCoords);
       
       const keywords = extractPOIKeywords(body.question);
       console.log('POI 搜索关键词:', keywords);
       
-      const poiResults = await searchVivoPOI(keywords, city, province);
+      // 使用坐标或城市进行POI搜索
+      const poiResults = await searchVivoPOI(
+        keywords, 
+        searchCity, 
+        province, 
+        (useLocationBasedSearch && userCoords) ? userCoords : undefined
+      );
       
       if (poiResults && poiResults.length > 0) {
         console.log('成功获取 POI 结果! 共找到:', poiResults.length, '条记录');
         
-        const introduction = generatePOIIntroduction(body.question, city, province);
+        // 确定是否使用"附近"作为位置描述
+        const isNearbySearch = useLocationBasedSearch && userCoords;
+        const introduction = generatePOIIntroduction(body.question, city, province, isNearbySearch);
         const poiRecommendations = formatPOIRecommendations(poiResults);
         
         const escapedIntro = escapeSSEText(introduction);
