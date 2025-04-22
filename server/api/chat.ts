@@ -1,301 +1,141 @@
-import { v4 as uuidv4 } from "uuid";
-import crypto from "crypto";
-import { Readable } from "stream";
-import { fetch } from "ofetch";
+import { v4 as uuidv4 } from 'uuid';
+import crypto from 'crypto';
 
 function needsPOIRecommendation(question: string): boolean {
   const actionKeywords = [
-    "推荐",
-    "附近",
-    "哪里有",
-    "参观",
-    "游览",
-    "去哪",
-    "博物馆",
-    "景点",
-    "地点",
-    "地方",
-    "场所",
-    "位置",
-    "去处",
-    "可以去",
-    "有没有",
-    "在哪",
-    "怎么去",
-    "如何前往",
-    "观光",
-    "旅游",
-    "拜访",
-    "游玩",
-    "打卡",
-    "导览",
-    "展览",
-    "展示",
-    "文物",
-    "古迹",
+    '推荐', '附近', '哪里有', '参观', '游览', '去哪', '博物馆', '景点',
+    '地点', '地方', '场所', '位置', '去处', '可以去', '有没有', '在哪', 
+    '怎么去', '如何前往', '观光', '旅游', '拜访', '游玩', '打卡', 
+    '导览', '展览', '展示', '文物', '古迹'
   ];
-
+  
   const themeKeywords = [
-    "满族",
-    "清朝",
-    "文化",
-    "历史",
-    "八旗",
-    "皇家",
-    "皇族",
-    "皇室",
-    "皇宫",
-    "紫禁城",
-    "故宫",
-    "清史",
-    "满清",
-    "满汉",
-    "东北",
-    "民族",
-    "传统",
-    "风俗",
-    "习俗",
-    "服饰",
-    "宫廷",
-    "建筑",
-    "园林",
-    "陵墓",
+    '满族', '清朝', '文化', '历史', '八旗', '皇家', '皇族', '皇室',
+    '皇宫', '紫禁城', '故宫', '清史', '满清', '满汉', '东北', '民族',
+    '传统', '风俗', '习俗', '服饰', '宫廷', '建筑', '园林', '陵墓'
   ];
-
-  return (
-    actionKeywords.some((keyword) => question.includes(keyword)) &&
-    themeKeywords.some((keyword) => question.includes(keyword))
-  );
+  
+  return actionKeywords.some(keyword => question.includes(keyword)) && 
+         themeKeywords.some(keyword => question.includes(keyword));
 }
 
-// 从问题中提取可能的城市
-function extractCity(question: string): string {
-  const cities = [
-    "北京",
-    "上海",
-    "广州",
-    "深圳",
-    "成都",
-    "杭州",
-    "南京",
-    "武汉",
-    "西安",
-    "重庆",
-    "沈阳",
-    "大连",
-    "青岛",
-    "长春",
-    "哈尔滨",
-    "济南",
-  ];
-
-  for (const city of cities) {
-    if (question.includes(city)) {
-      return city;
-    }
-  }
-  return "北京";
-}
-
-// 提取可能的关键词
-function extractPOIKeywords(question: string): string[] {
-  const specificCombinations = [];
-
-  if (question.includes("满族博物馆")) specificCombinations.push("满族博物馆");
-  else if (
-    question.includes("满族") &&
-    question.includes("历史") &&
-    question.includes("博物馆")
-  )
-    specificCombinations.push("满族历史博物馆");
-  else if (
-    question.includes("满族") &&
-    question.includes("文化") &&
-    question.includes("博物馆")
-  )
-    specificCombinations.push("满族文化博物馆");
-  else if (question.includes("清朝") && question.includes("博物馆"))
-    specificCombinations.push("清朝博物馆");
-
-  if (specificCombinations.length > 0) {
-    return specificCombinations;
-  }
-
-  const baseKeywords = [];
-  const specificTerms = [];
-
-  if (question.includes("满族")) {
-    if (question.includes("博物馆")) baseKeywords.push("满族博物馆");
-    else if (question.includes("文化")) baseKeywords.push("满族文化");
-    else if (question.includes("历史")) baseKeywords.push("满族历史");
-    else baseKeywords.push("满族");
-  }
-
-  if (question.includes("清朝")) {
-    if (question.includes("博物馆")) baseKeywords.push("清朝博物馆");
-    else if (question.includes("历史")) baseKeywords.push("清朝历史");
-    else if (question.includes("文化")) baseKeywords.push("清朝文化");
-    else baseKeywords.push("清朝");
-  }
-
-  // 地点类型
-  if (question.includes("博物馆")) specificTerms.push("博物馆");
-  if (question.includes("历史")) specificTerms.push("历史博物馆");
-  if (question.includes("文化")) specificTerms.push("文化馆");
-  if (question.includes("遗址") || question.includes("古迹"))
-    specificTerms.push("历史遗址");
-  if (question.includes("公园") || question.includes("园林"))
-    specificTerms.push("公园");
-  if (question.includes("宫殿") || question.includes("宫"))
-    specificTerms.push("宫殿");
-  if (question.includes("陵墓") || question.includes("陵寝"))
-    specificTerms.push("陵墓");
-  if (question.includes("纪念馆") || question.includes("纪念"))
-    specificTerms.push("纪念馆");
-  if (question.includes("展览") || question.includes("展示"))
-    specificTerms.push("展览馆");
-
-  // 主题类型
-  if (question.includes("服饰") || question.includes("服装"))
-    specificTerms.push("满族服饰");
-  if (question.includes("美食") || question.includes("饮食"))
-    specificTerms.push("满族美食");
-  if (question.includes("工艺") || question.includes("手工"))
-    specificTerms.push("满族工艺");
-  if (question.includes("表演") || question.includes("演出"))
-    specificTerms.push("满族表演");
-  if (question.includes("节日") || question.includes("庆典"))
-    specificTerms.push("满族节日");
-
-  // 地区特定关键词
-  const city = extractCity(question);
-  if (city === "北京" && baseKeywords.length === 0) {
-    specificTerms.push("故宫博物院");
-    specificTerms.push("清华大学艺术博物馆");
-    specificTerms.push("颐和园");
-  }
-
-  if (baseKeywords.length === 0) {
-    baseKeywords.push("满族");
-    baseKeywords.push("清朝");
-  }
-
-  return [...baseKeywords, ...specificTerms];
-}
-
-function getCityLocation(city: string): string | undefined {
-  const cityLocations = {
-    北京: "116.397428,39.90923",
-    上海: "121.490317,31.222771",
-    广州: "113.330803,23.113901",
-    深圳: "114.057868,22.543099",
-    成都: "104.084717,30.657328",
-    杭州: "120.211539,30.246611",
-    南京: "118.802422,32.064653",
-    武汉: "114.311582,30.598467",
-    西安: "108.946266,34.347269",
-    重庆: "106.551557,29.563761",
+function extractLocation(question: string): { city: string, province: string } {
+  const provinces = {
+    '华北': ['北京市', '天津市', '河北省', '山西省', '内蒙古自治区'],
+    '东北': ['辽宁省', '吉林省', '黑龙江省'],
+    '华东': ['上海市', '江苏省', '浙江省', '安徽省', '福建省', '江西省', '山东省'],
+    '华中': ['河南省', '湖北省', '湖南省'],
+    '华南': ['广东省', '广西壮族自治区', '海南省'],
+    '西南': ['重庆市', '四川省', '贵州省', '云南省', '西藏自治区'],
+    '西北': ['陕西省', '甘肃省', '青海省', '宁夏回族自治区', '新疆维吾尔自治区']
   };
+  
+  const cities = [
+    '北京', '上海', '广州', '深圳', 
+    '成都', '重庆', '大连', '东莞', '佛山', '福州', '杭州', '合肥', '济南', '昆明',
+    '南京', '宁波', '青岛', '苏州', '天津', '武汉', '西安', '厦门', '长沙', '郑州',
+    '长春', '哈尔滨', '沈阳', '石家庄', '太原', '呼和浩特', '南昌', '广州', '南宁', '海口',
+    '贵阳', '拉萨', '兰州', '西宁', '银川', '乌鲁木齐',
+    '开封', '洛阳', '南京', '西安', '扬州', '苏州', '杭州', '绍兴', '扬州', '泉州', 
+    '景德镇', '遵义', '丽江', '大理', '敦煌'
+  ];
 
-  return cityLocations[city];
-}
-
-async function fetchPOIRecommendations(
-  keywords: string,
-  location?: string,
-  city: string = "北京"
-) {
-  try {
-    const AMAP_KEY = process.env.AMAP_KEY || "38a9e8f6f5b8e0a3d65e2bf9fcdbd0c1";
-
-    const params = new URLSearchParams({
-      key: AMAP_KEY,
-      keywords: keywords,
-      offset: "10",
-      page: "1",
-      extensions: "all",
-      sortrule: "distance",
-    });
-
-    if (location) {
-      params.append("location", location);
-      params.append("radius", "5000");
-      const url = `https://restapi.amap.com/v3/place/around?${params.toString()}`;
-      console.log("使用周边搜索 API:", url);
-      const response = await fetch(url);
-
-      if (!response.ok) {
-        throw new Error(`高德 API 错误: ${response.status}`);
-      }
-
-      const data = await response.json();
-      console.log(
-        "周边搜索 API 响应:",
-        JSON.stringify(data).substring(0, 200) + "..."
-      );
-
-      if (data.status === "1" && data.pois && data.pois.length > 0) {
-        return data.pois.slice(0, 5);
-      }
-    } else {
-      params.append("city", city);
-      const url = `https://restapi.amap.com/v3/place/text?${params.toString()}`;
-      console.log("使用城市搜索 API:", url);
-      const response = await fetch(url);
-
-      if (!response.ok) {
-        throw new Error(`高德 API 错误: ${response.status}`);
-      }
-
-      const data = await response.json();
-      console.log(
-        "城市搜索 API 响应:",
-        JSON.stringify(data).substring(0, 200) + "..."
-      );
-
-      if (data.status === "1" && data.pois && data.pois.length > 0) {
-        return data.pois.slice(0, 5);
+  const normalizedCities = [...new Set(cities)].map(c => c.replace('市', ''));
+  
+  let detectedCity = null;
+  let detectedProvince = null;
+  
+  for (const city of normalizedCities) {
+    if (question.includes(city)) {
+      detectedCity = city;
+      break;
+    }
+  }
+  
+  for (const [region, provinceList] of Object.entries(provinces)) {
+    for (const province of provinceList) {
+      const shortProvince = province.replace(/省|市|自治区/g, '');
+      if (question.includes(shortProvince) || question.includes(province)) {
+        detectedProvince = shortProvince;
+        if (!detectedCity) {
+          switch(shortProvince) {
+            case '北京': case '天津': case '上海': case '重庆':
+              detectedCity = shortProvince;
+              break;
+            case '河北': detectedCity = '石家庄'; break;
+            case '山西': detectedCity = '太原'; break;
+            case '内蒙古': detectedCity = '呼和浩特'; break;
+            case '辽宁': detectedCity = '沈阳'; break;
+            case '吉林': detectedCity = '长春'; break;
+            case '黑龙江': detectedCity = '哈尔滨'; break;
+            case '江苏': detectedCity = '南京'; break;
+            case '浙江': detectedCity = '杭州'; break;
+            case '安徽': detectedCity = '合肥'; break;
+            case '福建': detectedCity = '福州'; break;
+            case '江西': detectedCity = '南昌'; break;
+            case '山东': detectedCity = '济南'; break;
+            case '河南': detectedCity = '郑州'; break;
+            case '湖北': detectedCity = '武汉'; break;
+            case '湖南': detectedCity = '长沙'; break;
+            case '广东': detectedCity = '广州'; break;
+            case '广西': detectedCity = '南宁'; break;
+            case '海南': detectedCity = '海口'; break;
+            case '四川': detectedCity = '成都'; break;
+            case '贵州': detectedCity = '贵阳'; break;
+            case '云南': detectedCity = '昆明'; break;
+            case '西藏': detectedCity = '拉萨'; break;
+            case '陕西': detectedCity = '西安'; break;
+            case '甘肃': detectedCity = '兰州'; break;
+            case '青海': detectedCity = '西宁'; break;
+            case '宁夏': detectedCity = '银川'; break;
+            case '新疆': detectedCity = '乌鲁木齐'; break;
+          }
+        }
+        break;
       }
     }
-
-    return [];
-  } catch (error) {
-    console.error("获取 POI 推荐失败:", error);
-    return [];
+    if (detectedProvince) break;
   }
+  
+  return {
+    city: detectedCity || '北京',
+    province: detectedProvince || '北京'
+  };
 }
 
-function escapeSSEText(text: string): string {
-  return text.replace(/\n/g, "\\n").replace(/"/g, '\\"').replace(/\r/g, "\\r");
-}
-
-function formatPOIRecommendations(pois) {
-  return pois
-    .map(
-      (poi, index) =>
-        `${index + 1}. ${poi.name}\n   地址：${
-          poi.address || "未提供"
-        }\n   电话：${poi.tel || "未提供"}`
-    )
-    .join("\n\n");
-}
-
-function generatePOIIntroduction(question: string) {
-  if (question.includes("满族")) {
-    return "为您找到以下与满族文化相关的地点：";
-  } else if (question.includes("清朝")) {
-    return "以下是一些与清朝历史相关的推荐地点：";
-  } else if (question.includes("博物馆")) {
-    return "为您推荐以下可以参观的博物馆：";
-  } else {
-    return "根据您的需求，为您找到以下相关地点：";
+function extractPOIKeywords(question: string): string {
+  if (question.includes('满族博物馆')) return '满族博物馆';
+  if (question.includes('满族') && question.includes('文化') && question.includes('博物馆')) 
+    return '满族文化博物馆';
+  if (question.includes('满族') && question.includes('历史') && question.includes('博物馆'))
+    return '满族历史博物馆';
+  if (question.includes('清朝') && question.includes('博物馆'))
+    return '清朝博物馆';
+  
+  if (question.includes('满族')) {
+    if (question.includes('博物馆')) return '满族博物馆';
+    if (question.includes('文化')) return '满族文化';
+    if (question.includes('历史')) return '满族历史';
+    if (question.includes('服饰')) return '满族服饰';
+    if (question.includes('美食')) return '满族美食';
+    if (question.includes('商店') || question.includes('店铺')) return '满族文化商店';
+    return '满族';
   }
+  
+  if (question.includes('清朝')) {
+    if (question.includes('博物馆')) return '清朝博物馆';
+    if (question.includes('历史')) return '清朝历史';
+    if (question.includes('文化')) return '清朝文化';
+    return '清朝';
+  }
+  
+  if (question.includes('博物馆')) return '博物馆';
+  return '满族博物馆';
 }
 
 function generateNonce(length = 8) {
-  const chars =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  let result = "";
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let result = '';
   for (let i = 0; i < length; i++) {
     result += chars.charAt(Math.floor(Math.random() * chars.length));
   }
@@ -305,10 +145,8 @@ function generateNonce(length = 8) {
 function buildQueryString(params) {
   return Object.keys(params)
     .sort()
-    .map(
-      (key) => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`
-    )
-    .join("&");
+    .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`)
+    .join('&');
 }
 
 function generateSignature(appId, appKey, method, uri, queryParams) {
@@ -317,250 +155,147 @@ function generateSignature(appId, appKey, method, uri, queryParams) {
   const canonicalQueryString = buildQueryString(queryParams);
   const signedHeadersString = `x-ai-gateway-app-id:${appId}\nx-ai-gateway-timestamp:${timestamp}\nx-ai-gateway-nonce:${nonce}`;
   const signingString = `${method.toUpperCase()}\n${uri}\n${canonicalQueryString}\n${appId}\n${timestamp}\n${signedHeadersString}`;
-  console.log("签名内容:", signingString);
-  const signature = crypto
-    .createHmac("sha256", appKey)
-    .update(Buffer.from(signingString, "utf-8"))
-    .digest("base64");
-  console.log("生成的签名:", signature);
+  
+  const signature = crypto.createHmac('sha256', appKey)
+    .update(Buffer.from(signingString, 'utf-8'))
+    .digest('base64');
+  
   return {
     timestamp,
     nonce,
     signature,
-    signedHeaders:
-      "x-ai-gateway-app-id;x-ai-gateway-timestamp;x-ai-gateway-nonce",
+    signedHeaders: "x-ai-gateway-app-id;x-ai-gateway-timestamp;x-ai-gateway-nonce"
   };
 }
 
-export default defineEventHandler(async (event) => {
-  const body = await readBody(event);
+function escapeSSEText(text: string): string {
+  return text
+    .replace(/\n/g, '\\n')
+    .replace(/"/g, '\\"')
+    .replace(/\r/g, '\\r');
+}
 
-  if (!body.chatid || !body.question) {
-    return createError({
-      statusCode: 400,
-      statusMessage: "缺少必要参数 chatid 或 question",
-    });
-  }
-
-  // 检查是否需要 POI 推荐
-  if (needsPOIRecommendation(body.question)) {
-    try {
-      // 提取城市信息
-      const city = extractCity(body.question);
-      console.log("检测到城市:", city);
-
-      // 获取位置信息
-      let location;
-      if (body.location) {
-        location = body.location;
-        console.log("使用客户端提供的位置:", location);
-      } else if (city && body.question.includes("附近")) {
-        location = getCityLocation(city);
-        console.log(`使用${city}的默认位置:`, location);
-      }
-
-      const keywords = extractPOIKeywords(body.question).join("|");
-      console.log("POI 搜索关键词:", keywords);
-
-      const poiResults = await fetchPOIRecommendations(
-        keywords,
-        location,
-        city
-      );
-
-      setResponseHeaders(event, {
-        "Content-Type": "text/event-stream",
-        "Cache-Control": "no-cache",
-        Connection: "keep-alive",
-        "X-Accel-Buffering": "no",
-      });
-
-      if (poiResults && poiResults.length > 0) {
-        console.log("成功获取 POI 结果! 共找到:", poiResults.length, "条记录");
-
-        console.log("所有 POI 结果:");
-        poiResults.forEach((poi, index) => {
-          console.log(`[${index + 1}] ${poi.name} - ${poi.address}`);
-        });
-
-        const introduction = generatePOIIntroduction(body.question);
-
-        const poiRecommendations = formatPOIRecommendations(poiResults);
-
-        const escapedIntro = escapeSSEText(introduction);
-        const escapedResults = escapeSSEText(poiRecommendations);
-
-        event.node.res.write(`data: {"answer": "${escapedIntro}"}\n\n`);
-
-        await new Promise((resolve) => setTimeout(resolve, 300));
-
-        event.node.res.write(`data: {"answer": "\\n\\n${escapedResults}"}\n\n`);
-
-        event.node.res.write("event: close\ndata: [DONE]\n\n");
-        event.node.res.end();
-
-        return;
-      } else {
-        console.log("POI 搜索无结果，关键词:", keywords);
-
-        const errorMessage = escapeSSEText(
-          `很抱歉，我没有在${city}找到与'${body.question}'相关的地点信息。您可以尝试用不同的关键词再次提问，或询问其他满族文化相关问题。`
-        );
-        event.node.res.write(`data: {"answer": "${errorMessage}"}\n\n`);
-        event.node.res.write("event: close\ndata: [DONE]\n\n");
-        event.node.res.end();
-
-        return;
-      }
-    } catch (poiError) {
-      console.error("获取 POI 推荐失败:", poiError);
-
-      console.log("POI 查询失败，回退到大模型回答");
-    }
-  }
-
-  const appId = process.env.BLUEHEART_APP_ID || "2025432539";
-  const appKey = process.env.BLUEHEART_APP_KEY || "GJmWCkkwVdqtjLPj";
-  const requestId = uuidv4();
-  const params = { requestId };
-  const uri = "/vivogpt/completions/stream";
-  const method = "POST";
+async function searchVivoPOI(keywords: string, city: string, province?: string) {
   try {
+    const appId = process.env.VIVO_APP_ID || '2025432539';
+    const appKey = process.env.VIVO_APP_KEY || 'GJmWCkkwVdqtjLPj';
+    const uri = '/search/geo';
+    const method = 'GET';
+    
+    const searchArea = city || province || '北京';
+    
+    const queryParams = {
+      keywords,
+      city: searchArea,
+      page_num: '1',
+      page_size: '5'
+    };
+    
     const { timestamp, nonce, signature, signedHeaders } = generateSignature(
-      appId,
-      appKey,
-      method,
-      uri,
-      params
+      appId, appKey, method, uri, queryParams
     );
-
-    const queryStr = buildQueryString(params);
-    const url = `https://api-ai.vivo.com.cn${uri}?${queryStr}`;
+    
+    const queryString = buildQueryString(queryParams);
+    const url = `https://api-ai.vivo.com.cn${uri}?${queryString}`;
+    
     const headers = {
       "Content-Type": "application/json",
       "X-AI-GATEWAY-APP-ID": appId,
       "X-AI-GATEWAY-TIMESTAMP": timestamp,
       "X-AI-GATEWAY-NONCE": nonce,
       "X-AI-GATEWAY-SIGNED-HEADERS": signedHeaders,
-      "X-AI-GATEWAY-SIGNATURE": signature,
+      "X-AI-GATEWAY-SIGNATURE": signature
     };
-
-    console.log("请求详情:", { url, headers });
-
-    setResponseHeaders(event, {
-      "Content-Type": "text/event-stream",
-      "Cache-Control": "no-cache",
-      Connection: "keep-alive",
-      "X-Accel-Buffering": "no",
-    });
-
-    const response = await fetch(url, {
-      method: "POST",
-      headers,
-      body: JSON.stringify({
-        prompt: body.question,
-        model: "vivo-BlueLM-TB-Pro",
-        sessionId: body.chatid,
-        extra: {
-          temperature: 0.9,
-          top_p: 0.7,
-        },
-      }),
-    });
-
+    
+    console.log("VIVO POI API 请求:", url);
+    console.log("搜索区域:", searchArea);
+    
+    const response = await fetch(url, { method, headers });
+    
     if (!response.ok) {
-      const errorText = await response.text();
-      console.error("API错误:", response.status, errorText);
-      throw new Error(`API错误: ${response.status} ${errorText}`);
+      throw new Error(`VIVO POI API 错误: ${response.status}`);
     }
-
-    if (!response.body) {
-      throw new Error("API没有返回流数据");
-    }
-    const reader = response.body.getReader();
-    let decoder = new TextDecoder();
-    let buffer = "";
-
-    try {
-      while (true) {
-        const { done, value } = await reader.read();
-
-        if (done) {
-          if (buffer.trim()) {
-            processChunk(buffer, event.node.res);
-          }
-          break;
-        }
-
-        buffer += decoder.decode(value, { stream: true });
-
-        const lines = buffer.split("\n");
-        buffer = lines.pop() || "";
-        for (const line of lines) {
-          processChunk(line, event.node.res);
-        }
-      }
-    } catch (error) {
-      console.error("流处理错误:", error);
-      event.node.res.write(
-        `event: error\ndata: ${JSON.stringify({
-          error: "流处理错误",
-          message: error.message,
-        })}\n\n`
-      );
-    } finally {
-      event.node.res.write("event: close\ndata: [DONE]\n\n");
-      event.node.res.end();
-    }
-
-    event.node.req.on("close", () => {
-      reader.cancel();
-      console.log("客户端关闭连接");
-    });
-
-    return;
+    
+    const data = await response.json();
+    
+    return (data && data.pois && data.pois.length > 0) ? data.pois : [];
   } catch (error) {
-    console.error("处理请求出错:", error);
-
-    if (event.node.res.headersSent) {
-      event.node.res.write(
-        `event: error\ndata: ${JSON.stringify({
-          error: "处理请求失败",
-          message: error.message,
-        })}\n\n`
-      );
-      event.node.res.end();
-      return;
-    }
-
-    return {
-      error: "处理请求失败",
-      message: error.message,
-      details: error.response
-        ? {
-            status: error.response.status,
-            data: error.response.data,
-          }
-        : undefined,
-    };
+    console.error("搜索POI失败:", error);
+    return [];
   }
-});
+}
+
+async function callVivoLLM(question: string, chatid: string) {
+  const appId = process.env.BLUEHEART_APP_ID || '2025432539';
+  const appKey = process.env.BLUEHEART_APP_KEY || 'GJmWCkkwVdqtjLPj';
+  const requestId = uuidv4();
+  const params = { requestId };
+  const uri = '/vivogpt/completions/stream';
+  const method = 'POST';
+  
+  const { timestamp, nonce, signature, signedHeaders } = generateSignature(
+    appId, appKey, method, uri, params
+  );
+
+  const queryStr = buildQueryString(params);
+  const url = `https://api-ai.vivo.com.cn${uri}?${queryStr}`;
+  const headers = {
+    "Content-Type": "application/json",
+    "X-AI-GATEWAY-APP-ID": appId,
+    "X-AI-GATEWAY-TIMESTAMP": timestamp,
+    "X-AI-GATEWAY-NONCE": nonce,
+    "X-AI-GATEWAY-SIGNED-HEADERS": signedHeaders,
+    "X-AI-GATEWAY-SIGNATURE": signature
+  };
+
+  return await fetch(url, {
+    method: "POST",
+    headers,
+    body: JSON.stringify({
+      prompt: question,
+      model: "vivo-BlueLM-TB-Pro",
+      sessionId: chatid,
+      extra: {
+        temperature: 0.9,
+        top_p: 0.7
+      }
+    })
+  });
+}
+
+function formatPOIRecommendations(pois) {
+  return pois.map((poi, index) => 
+    `${index + 1}. ${poi.name}\n   地址：${poi.address || '未提供'}\n   电话：${poi.phone || '未提供'}\n   所在区域：${poi.city}${poi.district}`
+  ).join('\n\n');
+}
+
+function generatePOIIntroduction(question: string, city: string, province?: string) {
+  const area = city || province || '北京';
+  
+  if (question.includes('满族')) {
+    return `为您找到${area}的以下与满族文化相关的地点：`;
+  } else if (question.includes('清朝')) {
+    return `以下是${area}的一些与清朝历史相关的推荐地点：`;
+  } else if (question.includes('博物馆')) {
+    return `为您推荐${area}的以下可以参观的博物馆：`;
+  }
+  return `根据您的需求，为您找到${area}的以下相关地点：`;
+}
 
 function processChunk(line, res) {
   line = line.trim();
   if (!line) return;
 
-  console.log("收到数据:", line);
-  if (line.startsWith("event:")) {
+  if (line.startsWith('event:')) {
     res.write(`${line}\n`);
     return;
   }
 
-  if (line.startsWith("data:")) {
+  if (line.startsWith('data:')) {
     try {
       const content = line.substring(5).trim();
 
-      if (content === "[DONE]") {
+      if (content === '[DONE]') {
         res.write(`${line}\n\n`);
         return;
       }
@@ -575,7 +310,7 @@ function processChunk(line, res) {
         res.write(`${line}\n\n`);
       }
     } catch (e) {
-      console.error("解析数据出错:", e, line);
+      console.error('解析数据出错:', e);
       res.write(`${line}\n\n`);
     }
     return;
@@ -583,3 +318,127 @@ function processChunk(line, res) {
 
   res.write(`${line}\n`);
 }
+
+export default defineEventHandler(async (event) => {
+  const body = await readBody(event);
+
+  if (!body.chatid || !body.question) {
+    return createError({
+      statusCode: 400,
+      statusMessage: '缺少必要参数 chatid 或 question'
+    });
+  }
+  
+  setResponseHeaders(event, {
+    'Content-Type': 'text/event-stream',
+    'Cache-Control': 'no-cache',
+    'Connection': 'keep-alive',
+    'X-Accel-Buffering': 'no'
+  });
+  
+  if (needsPOIRecommendation(body.question)) {
+    try {
+      const { city, province } = extractLocation(body.question);
+      console.log('检测到城市:', city, '省份:', province);
+      
+      const keywords = extractPOIKeywords(body.question);
+      console.log('POI 搜索关键词:', keywords);
+      
+      const poiResults = await searchVivoPOI(keywords, city, province);
+      
+      if (poiResults && poiResults.length > 0) {
+        console.log('成功获取 POI 结果! 共找到:', poiResults.length, '条记录');
+        
+        const introduction = generatePOIIntroduction(body.question, city, province);
+        const poiRecommendations = formatPOIRecommendations(poiResults);
+        
+        const escapedIntro = escapeSSEText(introduction);
+        const escapedResults = escapeSSEText(poiRecommendations);
+        
+        event.node.res.write(`data: {"answer": "${escapedIntro}"}\n\n`);
+        await new Promise(resolve => setTimeout(resolve, 300));
+        event.node.res.write(`data: {"answer": "\\n\\n${escapedResults}"}\n\n`);
+        
+        event.node.res.write('event: close\ndata: [DONE]\n\n');
+        event.node.res.end();
+        return;
+      }
+      
+      console.log('POI 搜索无结果，回退到大模型回答');
+    } catch (error) {
+      console.error('POI 推荐处理失败:', error);
+    }
+  }
+  
+  try {
+    const response = await callVivoLLM(body.question, body.chatid);
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`API错误: ${response.status} ${errorText}`);
+    }
+
+    if (!response.body) {
+      throw new Error('API没有返回流数据');
+    }
+    
+    const reader = response.body.getReader();
+    let decoder = new TextDecoder();
+    let buffer = '';
+
+    try {
+      while (true) {
+        const { done, value } = await reader.read();
+
+        if (done) {
+          if (buffer.trim()) {
+            processChunk(buffer, event.node.res);
+          }
+          break;
+        }
+
+        buffer += decoder.decode(value, { stream: true });
+
+        const lines = buffer.split('\n');
+        buffer = lines.pop() || '';
+        for (const line of lines) {
+          processChunk(line, event.node.res);
+        }
+      }
+    } catch (error) {
+      console.error('流处理错误:', error);
+      event.node.res.write(`event: error\ndata: ${JSON.stringify({
+        error: '流处理错误',
+        message: error.message
+      })}\n\n`);
+    } finally {
+      event.node.res.write('event: close\ndata: [DONE]\n\n');
+      event.node.res.end();
+    }
+
+    event.node.req.on('close', () => {
+      reader.cancel();
+      console.log('客户端关闭连接');
+    });
+  } catch (error) {
+    console.error('处理请求出错:', error);
+
+    if (event.node.res.headersSent) {
+      event.node.res.write(`event: error\ndata: ${JSON.stringify({
+        error: '处理请求失败',
+        message: error.message
+      })}\n\n`);
+      event.node.res.end();
+      return;
+    }
+
+    return {
+      error: '处理请求失败',
+      message: error.message,
+      details: error.response ? {
+        status: error.response.status,
+        data: error.response.data
+      } : undefined
+    };
+  }
+});
