@@ -20,7 +20,7 @@ function needsPOIRecommendation(question: string): boolean {
 }
 
 function extractLocation(question: string): { city: string, province: string } {
-  const provinces = {
+  const provinceMap = {
     '华北': ['北京市', '天津市', '河北省', '山西省', '内蒙古自治区'],
     '东北': ['辽宁省', '吉林省', '黑龙江省'],
     '华东': ['上海市', '江苏省', '浙江省', '安徽省', '福建省', '江西省', '山东省'],
@@ -30,14 +30,25 @@ function extractLocation(question: string): { city: string, province: string } {
     '西北': ['陕西省', '甘肃省', '青海省', '宁夏回族自治区', '新疆维吾尔自治区']
   };
   
+  const provinceCapitals = {
+    '北京': '北京', '天津': '天津', '上海': '上海', '重庆': '重庆',
+    '河北': '石家庄', '山西': '太原', '内蒙古': '呼和浩特',
+    '辽宁': '沈阳', '吉林': '长春', '黑龙江': '哈尔滨',
+    '江苏': '南京', '浙江': '杭州', '安徽': '合肥', '福建': '福州',
+    '江西': '南昌', '山东': '济南', '河南': '郑州', '湖北': '武汉',
+    '湖南': '长沙', '广东': '广州', '广西': '南宁', '海南': '海口',
+    '四川': '成都', '贵州': '贵阳', '云南': '昆明', '西藏': '拉萨',
+    '陕西': '西安', '甘肃': '兰州', '青海': '西宁', '宁夏': '银川',
+    '新疆': '乌鲁木齐'
+  };
+  
   const cities = [
-    '北京', '上海', '广州', '深圳', 
-    '成都', '重庆', '大连', '东莞', '佛山', '福州', '杭州', '合肥', '济南', '昆明',
-    '南京', '宁波', '青岛', '苏州', '天津', '武汉', '西安', '厦门', '长沙', '郑州',
-    '长春', '哈尔滨', '沈阳', '石家庄', '太原', '呼和浩特', '南昌', '广州', '南宁', '海口',
-    '贵阳', '拉萨', '兰州', '西宁', '银川', '乌鲁木齐',
-    '开封', '洛阳', '南京', '西安', '扬州', '苏州', '杭州', '绍兴', '扬州', '泉州', 
-    '景德镇', '遵义', '丽江', '大理', '敦煌'
+    '北京', '上海', '广州', '深圳', '成都', '重庆', '大连', '东莞',
+    '佛山', '福州', '杭州', '合肥', '济南', '昆明', '南京', '宁波',
+    '青岛', '苏州', '天津', '武汉', '西安', '厦门', '长沙', '郑州',
+    '长春', '哈尔滨', '沈阳', '石家庄', '太原', '呼和浩特', '南昌', '南宁',
+    '海口', '贵阳', '拉萨', '兰州', '西宁', '银川', '乌鲁木齐', '开封',
+    '洛阳', '扬州', '绍兴', '泉州', '景德镇', '遵义', '丽江', '大理', '敦煌'
   ];
 
   const normalizedCities = [...new Set(cities)].map(c => c.replace('市', ''));
@@ -52,44 +63,30 @@ function extractLocation(question: string): { city: string, province: string } {
     }
   }
   
-  for (const [region, provinceList] of Object.entries(provinces)) {
+  const provinceAliases = {
+    '内蒙古': ['内蒙'],
+    '黑龙江': ['黑龙'],
+    '新疆': ['新疆维吾尔'],
+    '宁夏': ['宁夏回族'],
+    '广西': ['广西壮族']
+  };
+  
+  for (const [region, provinceList] of Object.entries(provinceMap)) {
     for (const province of provinceList) {
       const shortProvince = province.replace(/省|市|自治区/g, '');
-      if (question.includes(shortProvince) || question.includes(province)) {
+      
+      let aliases = [province, shortProvince];
+      for (const [key, values] of Object.entries(provinceAliases)) {
+        if (key === shortProvince || values.includes(shortProvince)) {
+          aliases = [...aliases, key, ...values];
+          break;
+        }
+      }
+      
+      if (aliases.some(alias => question.includes(alias))) {
         detectedProvince = shortProvince;
         if (!detectedCity) {
-          switch(shortProvince) {
-            case '北京': case '天津': case '上海': case '重庆':
-              detectedCity = shortProvince;
-              break;
-            case '河北': detectedCity = '石家庄'; break;
-            case '山西': detectedCity = '太原'; break;
-            case '内蒙古': detectedCity = '呼和浩特'; break;
-            case '辽宁': detectedCity = '沈阳'; break;
-            case '吉林': detectedCity = '长春'; break;
-            case '黑龙江': detectedCity = '哈尔滨'; break;
-            case '江苏': detectedCity = '南京'; break;
-            case '浙江': detectedCity = '杭州'; break;
-            case '安徽': detectedCity = '合肥'; break;
-            case '福建': detectedCity = '福州'; break;
-            case '江西': detectedCity = '南昌'; break;
-            case '山东': detectedCity = '济南'; break;
-            case '河南': detectedCity = '郑州'; break;
-            case '湖北': detectedCity = '武汉'; break;
-            case '湖南': detectedCity = '长沙'; break;
-            case '广东': detectedCity = '广州'; break;
-            case '广西': detectedCity = '南宁'; break;
-            case '海南': detectedCity = '海口'; break;
-            case '四川': detectedCity = '成都'; break;
-            case '贵州': detectedCity = '贵阳'; break;
-            case '云南': detectedCity = '昆明'; break;
-            case '西藏': detectedCity = '拉萨'; break;
-            case '陕西': detectedCity = '西安'; break;
-            case '甘肃': detectedCity = '兰州'; break;
-            case '青海': detectedCity = '西宁'; break;
-            case '宁夏': detectedCity = '银川'; break;
-            case '新疆': detectedCity = '乌鲁木齐'; break;
-          }
+          detectedCity = provinceCapitals[shortProvince] || '北京';
         }
         break;
       }
