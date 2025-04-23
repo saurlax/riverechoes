@@ -9,6 +9,7 @@
     <RouterLink to="/show"><button>表演</button></RouterLink>
     <RouterLink to="/exhibition"><button>展览</button></RouterLink>
     <RouterLink to="/ritual"><button>祭祀</button></RouterLink>
+    <RouterLink to="/museum"><button>博物馆</button></RouterLink>
   </div>
 </template>
 
@@ -44,5 +45,11 @@
 .background a:nth-child(5) {
   top: 90%;
   left: 70%;
+}
+
+
+.background a:nth-child(6) {
+  top: 55%;
+  left: 80%;
 }
 </style>
