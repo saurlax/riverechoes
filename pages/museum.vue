@@ -42,6 +42,12 @@ const museums = [
         image: '/assets/museum/museum7.webp',
         website: 'http://lnhtal.com/'
     },
+    {
+        name: '清西陵',
+        address: '河北省保定市易县梁各庄',
+        image: '/assets/museum/museum8.webp',
+        website: 'http://qingxiling.com/'
+    }
 ];
 </script>
 

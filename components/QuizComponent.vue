@@ -187,18 +187,18 @@ const closeQuiz = () => {
   transform: translate(-50%, -50%);
   width: 90%;
   max-width: 500px;
-  background-color: rgba(255, 255, 255, 0.9); /* 半透明白色背景 */
-  background-image: url('../assets/back.png'); /* 更新为正确的背景图路径 */
+  background-color: rgba(255, 255, 255, 0.5); 
+  background-image: url('/public/assets/back.png');
   background-size: cover;
   background-position: center;
-  background-blend-mode: overlay; /* 混合模式让背景图和颜色混合 */
+  background-blend-mode: overlay;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   padding: 16px;
   z-index: 1000;
 }
 
-/* 可以根据背景图情况调整以下样式，提高文字可读性 */
+
 .question, .option-text, .explanation p, .correct-answer p {
   color: #333;
   font-weight: 500;
