@@ -181,8 +181,8 @@ function escapeSSEText(text: string): string {
 // 添加坐标支持
 async function searchVivoPOI(keywords: string, city: string, province?: string, coords?: { latitude: number, longitude: number }) {
   try {
-    const appId = process.env.VIVO_APP_ID || '2025432539';
-    const appKey = process.env.VIVO_APP_KEY || 'GJmWCkkwVdqtjLPj';
+    const appId = process.env.VIVO_APP_ID;
+    const appKey = process.env.VIVO_APP_KEY;
     const uri = '/search/geo';
     const method = 'GET';
     
@@ -239,8 +239,8 @@ async function searchVivoPOI(keywords: string, city: string, province?: string, 
 }
 
 async function callVivoLLM(question: string, chatid: string) {
-  const appId = process.env.BLUEHEART_APP_ID || '2025432539';
-  const appKey = process.env.BLUEHEART_APP_KEY || 'GJmWCkkwVdqtjLPj';
+  const appId = process.env.BLUEHEART_APP_ID;
+  const appKey = process.env.BLUEHEART_APP_KEY;
   const requestId = uuidv4();
   const params = { requestId };
   const uri = '/vivogpt/completions/stream';
