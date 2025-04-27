@@ -25,3 +25,6 @@ logs
 package-lock.json
 yarn.lock
 pnpm-lock.yaml
+
+chat1.ts
+chat2.ts

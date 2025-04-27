@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import QuizComponent from '../components/QuizComponent.vue';
 const item = ref(0)
 const info = [
   { name: '骨刻柳树神神偶', desc: '骨刻神偶是满族早期祭祀物，后成挂饰辟邪。制作需动物骨头，手艺濒失。江汉力用鱼骨刻成，手工独特。神偶代表不同类型神祇，制作需多重工序，近期用现代工具打磨，呈现光滑逼真。神偶最初为梦境幻想，后有具体形象。请神仪式中，萨满祭祀后神偶灵验。传承300余年，因年代久远和神秘性，面临失传。' },
@@ -18,10 +19,11 @@ const change = () => {
 
 <template>
   <div class="background">
-    <div>
+    <div class="header">
       <RouterLink to="/map"><button>返回</button></RouterLink>
       <RouterLink to="/vr"><button>VR模式</button></RouterLink>
       <button @click="change">切换展品</button>
+      <QuizComponent :pageContext="`请生成一道关于${info[item].name}的选择题，可涉及其历史背景、工艺特点或文化意义。参考信息：${info[item].desc}`" />
     </div>
     <div class="item" :style="`background-image: url('/assets/exhibition/${item}.webp')`"></div>
     <div class="box bottom">
@@ -47,5 +49,11 @@ const change = () => {
   background-position: center;
   background-repeat: no-repeat;
   filter: drop-shadow(0 0 10px gray);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  padding: 10px;
 }
 </style>
