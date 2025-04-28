@@ -46,15 +46,16 @@ const saveImage = () => {
 <template>
   <div class="background" ref="saveArea">
     <div class="header">
-    <RouterLink to="/map"><button>返回</button></RouterLink>
-    <QuizComponent pageContext="请生成关于满族传统服饰的多样化问题，可涉及：1)历史演变(服饰的起源、发展与社会历史背景); 2)结构特点(不同部件如帽饰、服饰、鞋饰、首饰等的造型与功能); 3)材质工艺(用料选择、制作工艺与装饰技法); 4)纹样象征(图案寓意、颜色象征与身份表达); 5)性别差异(男女服饰的区别与社会文化意义); 6)节庆与日常(不同场合的着装规范); 7)与周边民族服饰的比较; 8)现代传承与创新应用。问题可以是基础知识型、工艺鉴赏型、文化分析型、历史探究型或趣味民俗型，让学习者能够全面了解满族服饰的多元文化内涵与艺术价值。" />
-  </div>
-    <ChatBox class="box"
-      text="满族服饰历史悠久，起源可追溯至7000年前。上世纪30年代，男女穿直筒式大袖长袍，女性旗袍有花卉纹饰。40年代后，受时尚影响，男性旗袍废弃，女性旗袍变为窄袖、贴身、收腰，袍长及踝。" />
+      <RouterLink to="/map"><button>返回</button></RouterLink>
+      <QuizComponent
+        pageContext="请生成关于满族传统服饰的多样化问题，可涉及：1)历史演变(服饰的起源、发展与社会历史背景); 2)结构特点(不同部件如帽饰、服饰、鞋饰、首饰等的造型与功能); 3)材质工艺(用料选择、制作工艺与装饰技法); 4)纹样象征(图案寓意、颜色象征与身份表达); 5)性别差异(男女服饰的区别与社会文化意义); 6)节庆与日常(不同场合的着装规范); 7)与周边民族服饰的比较; 8)现代传承与创新应用。问题可以是基础知识型、工艺鉴赏型、文化分析型、历史探究型或趣味民俗型，让学习者能够全面了解满族服饰的多元文化内涵与艺术价值。" />
+    </div>
     <div class="layers">
       <div class="base"></div>
       <div v-for="i in data" :style="i"></div>
     </div>
+    <ChatBox class="box"
+      text="满族服饰历史悠久，起源可追溯至7000年前。上世纪30年代，男女穿直筒式大袖长袍，女性旗袍有花卉纹饰。40年代后，受时尚影响，男性旗袍废弃，女性旗袍变为窄袖、贴身、收腰，袍长及踝。" />
     <div class="switch">
       <button @click="change('a')">帽饰{{ state.a }}</button>
       <button @click="change('b')">服饰{{ state.b }}</button>
@@ -69,6 +70,20 @@ const saveImage = () => {
 </template>
 
 <style scoped>
+.layers {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  /* 添加高度 */
+  position: absolute;
+  /* 改为绝对定位 */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
 .layers div {
   position: absolute;
   top: 0;
@@ -92,11 +107,18 @@ const saveImage = () => {
   position: absolute;
   bottom: 0;
   right: 0;
+  z-index: 10;
 }
+
 .header {
   display: flex;
   align-items: center;
   padding: 10px;
 }
 
+.box {
+  position: relative;
+  z-index: 10;
+  /* 添加这一行确保ChatBox在图层上方 */
+}
 </style>
