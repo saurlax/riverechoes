@@ -71,17 +71,30 @@ const saveImage = () => {
 
 <style scoped>
 .layers {
-  position: relative;
   z-index: 1;
   width: 100%;
   height: 100%;
   /* 添加高度 */
   position: absolute;
-  /* 改为绝对定位 */
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  position: relative;  /* 添加定位 */
+  z-index: 30;  /* 增加z-index，确保它高于所有其他元素 */
+  pointer-events: auto;  /* 确保可以接收点击事件 */
+}
+
+.header :deep(.quiz-component) {  /* 使用:deep穿透子组件 */
+  position: relative;
+  z-index: 30;
+  pointer-events: auto;
 }
 
 .layers div {
@@ -115,10 +128,16 @@ const saveImage = () => {
   align-items: center;
   padding: 10px;
 }
-
+.header button {
+  position: relative;
+  z-index: 20; /* 确保按钮有足够高的z-index */
+  pointer-events: auto; /* 确保按钮可点击 */
+  cursor: pointer; /* 添加鼠标指针样式 */
+}
 .box {
   position: relative;
   z-index: 10;
   /* 添加这一行确保ChatBox在图层上方 */
 }
+
 </style>
