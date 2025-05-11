@@ -1,4 +1,3 @@
-// https://nuxt.com/docs/api/configuration/nuxt-config
 import { readdirSync } from "fs";
 import { posix } from "path";
 
@@ -18,7 +17,7 @@ export default defineNuxtConfig({
   compatibilityDate: "2024-04-03",
   app: {
     head: {
-      title: "辽河满韵",
+      title: "寻根之旅",
       link: preloadLinks,
     },
   },
