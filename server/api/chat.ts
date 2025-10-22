@@ -225,26 +225,29 @@ async function callZhipuAI(question: string, chatid: string) {
   const messages = [
     {
       role: "system",
-      content: "你是一个专业的满族文化导览助手，专门为用户介绍满族历史、文化、习俗和相关景点。请用友好、专业的语言回答用户的问题。"
+      content: "你是一个专业的满族文化导览助手，专门为用户介绍满族历史、文化、习俗和相关景点。请用友好、专业的语言回答用户的问题。重要：请只返回纯文本答案，严禁使用任何 Markdown 语法、标题、代码块、反引号、表格或特殊标记。不要包含多余的格式化符号或解释。若需列举，请用纯文本换行，不使用 `-`、`*`、数字加点等 Markdown 列表符号。"
     },
     {
       role: "user", 
       content: question
     }
   ];
+  // 请求中明确关闭 thinking（思维链）并要求流式输出
+  const body = {
+    model: "glm-4-flash",
+    messages: messages,
+    stream: true,
+    temperature: 0.9,
+    top_p: 0.7,
+    max_tokens: 2048,
+    user_id: chatid,
+    thinking: { type: 'disabled' }
+  };
 
   return await fetch(url, {
     method: "POST",
     headers,
-    body: JSON.stringify({
-      model: "glm-4-flash",
-      messages: messages,
-      stream: true,
-      temperature: 0.9,
-      top_p: 0.7,
-      max_tokens: 2048,
-      user_id: chatid
-    })
+    body: JSON.stringify(body)
   });
 }
 
